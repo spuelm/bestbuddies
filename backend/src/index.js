@@ -10,6 +10,12 @@ const app = express();
 
 app.use(cors());
 
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok"
+  });
+});
+
 app.get("/api/person/:name", async (req, res) => {
   try {
     const person = await findPerson(req.params.name);
@@ -31,7 +37,34 @@ app.get("/api/person/:name", async (req, res) => {
 app.get("/api/details/:qid", async (req, res) => {
   try {
     const details = await getPersonDetails(req.params.qid);
+
     res.json(details);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
+app.get("/api/persondetails/:name", async (req, res) => {
+  try {
+    const person = await findPerson(req.params.name);
+
+    if (!person) {
+      return res.status(404).json({
+        error: "Person nicht gefunden"
+      });
+    }
+
+    const details = await getPersonDetails(
+      person.wikidataId
+    );
+
+    res.json({
+      ...person,
+      ...details
+    });
+
   } catch (err) {
     res.status(500).json({
       error: err.message
