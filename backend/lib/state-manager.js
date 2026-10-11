@@ -1,49 +1,34 @@
-const fs =
-  require("fs");
+const fs = require("fs");
 
-function loadState(
-  stateFile
-) {
+function loadState(file) {
 
-  if (
-    !fs.existsSync(
-      stateFile
-    )
-  ) {
+  if (!fs.existsSync(file)) {
 
     return {
-      gapcontinue: null,
-      articleCount: 0,
-      qidCount: 0
+      lineNumber: 0,
+      processed: 0,
+      humans: 0,
+      updatedAt: null
     };
   }
 
   return JSON.parse(
     fs.readFileSync(
-      stateFile,
+      file,
       "utf8"
     )
   );
 }
 
 function saveState(
-  stateFile,
-  gapcontinue,
-  articleCount,
-  qidCount
+  file,
+  state
 ) {
 
   fs.writeFileSync(
-    stateFile,
+    file,
     JSON.stringify(
-      {
-        gapcontinue,
-        articleCount,
-        qidCount,
-        updatedAt:
-          new Date()
-            .toISOString()
-      },
+      state,
       null,
       2
     )

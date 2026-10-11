@@ -11,18 +11,35 @@ module.exports = {
 
   DATA_DIR,
 
-  OUTPUT_FILE:
+  REQUEST_DELAY_MS: 3000,
+
+  ALL_ARTICLES_FILE:
     path.join(
       DATA_DIR,
       "all_articles_with_qid.jsonl"
     ),
 
-  STATE_FILE:
+  ALL_ARTICLES_STATE_FILE:
     path.join(
       DATA_DIR,
       "all_articles_with_qid_state.json"
     ),
 
-  REQUEST_DELAY_MS:
-    3000
+  HUMAN_OUTPUT_FILE:
+    path.join(
+      DATA_DIR,
+      "person_candidates.jsonl"
+    ),
+
+  HUMAN_STATE_FILE:
+    path.join(
+      DATA_DIR,
+      "human_filter_state.json"
+    ),
+
+  P31_STATS_FILE:
+    path.join(
+      DATA_DIR,
+      "p31_stats.json"
+    )
 };
