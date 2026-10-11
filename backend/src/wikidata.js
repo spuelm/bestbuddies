@@ -30,6 +30,26 @@ async function findPerson(searchText) {
     beschreibung: person.description
   };
 }
+
+async function getEntityLabel(qid) {
+  const response = await axios.get(
+    `https://www.wikidata.org/wiki/Special:EntityData/${qid}.json`,
+    {
+      headers: {
+        "User-Agent": "BestBuddies/0.1 (development)"
+      }
+    }
+  );
+
+  const entity = response.data.entities[qid];
+
+  return (
+    entity.labels?.de?.value ||
+    entity.labels?.en?.value ||
+    qid
+  );
+}
+
 function getYear(wikidataDate) {
   if (!wikidataDate) {
     return null;
@@ -58,14 +78,20 @@ async function getPersonDetails(qid) {
 
   const death =
     claims.P570?.[0]?.mainsnak?.datavalue?.value?.time || null;
+const occupations =
+  claims.P106?.map(
+    item => item.mainsnak.datavalue.value.id
+  ) || [];
 
     return {
         geboren: getYear(birth),
-        gestorben: getYear(death)
+        gestorben: getYear(death),
+        berufe: occupations
     };
 }
 
 module.exports = {
   findPerson,
-  getPersonDetails
+  getPersonDetails,
+  getEntityLabel
 };

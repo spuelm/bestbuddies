@@ -3,9 +3,12 @@ const cors = require("cors");
 
 const {
   findPerson,
-  getPersonDetails
+  getPersonDetails,
+  getEntityLabel
 } = require("./wikidata");
-
+const {
+findContemporaries
+} = require("./contemporaries");
 const app = express();
 
 app.use(cors());
@@ -71,6 +74,67 @@ app.get("/api/persondetails/:name", async (req, res) => {
     });
   }
 });
+
+app.get("/api/label/:qid", async (req, res) => {
+  try {
+    const label =
+      await getEntityLabel(req.params.qid);
+
+    res.json({
+      id: req.params.qid,
+      bezeichnung: label
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
+app.get(
+  "/api/contemporaries/:name",
+  async (req, res) => {
+    try {
+
+      const person = await findPerson(
+        req.params.name
+      );
+
+      if (!person) {
+        return res.status(404).json({
+          error: "Person nicht gefunden"
+        });
+      }
+
+      const details =
+        await getPersonDetails(
+          person.wikidataId
+        );
+
+      const contemporaries =
+        await findContemporaries(
+          details.geboren,
+          details.gestorben
+        );
+
+      res.json({
+        person: person.name,
+        geboren: details.geboren,
+        gestorben: details.gestorben,
+        anzahl: contemporaries.length,
+        zeitgenossen: contemporaries
+      });
+
+    } catch (err) {
+      res.status(500).json({
+        error: err.message
+      });
+    }
+  }
+);
+
+
+
 
 app.listen(3001, () => {
   console.log("BestBuddies API läuft auf Port 3001");
