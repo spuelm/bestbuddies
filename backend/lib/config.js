@@ -34,7 +34,7 @@ module.exports = {
   HUMAN_STATE_FILE:
     path.join(
       DATA_DIR,
-      "human_filter_state.json"
+      "person_candidates_state.json"
     ),
 
   P31_STATS_FILE:

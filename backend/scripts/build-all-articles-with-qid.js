@@ -3,11 +3,11 @@ const fs =
 
 const {
   DATA_DIR,
-  OUTPUT_FILE,
-  STATE_FILE,
+  ALL_ARTICLES_FILE,
+  ALL_ARTICLES_STATE_FILE,
   REQUEST_DELAY_MS
 } =
-require("../lib/config");
+require("../lib/config");ALL_ARTICLES_FILE
 
 const {
   sleep
@@ -25,8 +25,8 @@ const {
 require("../lib/jsonl-writer");
 
 const {
-  loadState,
-  saveState
+  loadState2,
+  saveState2
 } =
 require("../lib/state-manager");
 
@@ -52,8 +52,8 @@ async function run() {
   }
 
   const state =
-    loadState(
-      STATE_FILE
+    loadState2(
+      ALL_ARTICLES_STATE_FILE
     );
 
   let gapcontinue =
@@ -103,27 +103,26 @@ async function run() {
         }
 
         records.push({
+          pageid: page.pageid,
 
-          pageid:
-            page.pageid,
+          ns: page.ns,
 
-          ns:
-            page.ns,
-
-          title:
-            page.title,
+          title: page.title,
 
           wikidataId,
 
           hasQid:
-            wikidataId !== null
+            wikidataId !== null,
+
+          articleLength:
+            page.length || 0
         });
 
         articleCount++;
       }
 
       appendRecords(
-        OUTPUT_FILE,
+        ALL_ARTICLES_FILE,
         records
       );
 
@@ -132,8 +131,8 @@ async function run() {
           ?.gapcontinue ||
         null;
 
-      saveState(
-        STATE_FILE,
+      saveState2(
+        ALL_ARTICLES_STATE_FILE,
         gapcontinue,
         articleCount,
         qidCount
@@ -187,8 +186,8 @@ async function run() {
         err.message
       );
 
-      saveState(
-        STATE_FILE,
+      saveState2(
+        ALL_ARTICLES_STATE_FILE,
         gapcontinue,
         articleCount,
         qidCount
