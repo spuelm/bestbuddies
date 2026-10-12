@@ -18,7 +18,7 @@ async function loadEntities(
         },
         headers: {
           "User-Agent":
-            "BestBuddiesBot/0.1"
+            "BestBuddiesBotData/0.1"
         }
       }
     );

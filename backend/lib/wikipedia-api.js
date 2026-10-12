@@ -29,7 +29,7 @@ async function fetchBatch(
         params,
         headers: {
           "User-Agent":
-            "BestBuddiesBot/0.1"
+            "BestBuddiesBotWiki/0.1"
         },
         timeout: 30000
       }
