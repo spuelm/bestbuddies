@@ -5,13 +5,13 @@ const path = require("path");
 const INPUT_FILE =
   path.join(
     __dirname,
-    "../data/person_candidates.jsonl"
+    "../data/all_articles_with_qid.jsonl"
   );
 
 const OUTPUT_FILE =
   path.join(
     __dirname,
-    "../data/person_candidates_sorted.jsonl"
+    "../data/all_articles_with_qid_sorted.jsonl"
   );
 
 async function run() {
@@ -83,16 +83,8 @@ async function run() {
     of people
   ) {
 
-    const {
-        hasQid,
-        isHuman,
-        ...cleanPerson
-    } = person;
-
     stream.write(
-        JSON.stringify(
-        cleanPerson
-        ) + "\n"
+      JSON.stringify(person) + "\n"
     );
   }
 
