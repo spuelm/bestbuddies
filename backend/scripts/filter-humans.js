@@ -26,6 +26,23 @@ const {
 } =
 require("../lib/jsonl-writer");
 
+
+const readline =
+  require("readline");
+
+const stream =
+  fs.createReadStream(
+    ALL_ARTICLES_FILE
+  );
+
+const rl =
+  readline.createInterface({
+    input: stream,
+    crlfDelay: Infinity
+  });
+
+  
+
 const {
   ALL_ARTICLES_FILE,
   HUMAN_OUTPUT_FILE,
