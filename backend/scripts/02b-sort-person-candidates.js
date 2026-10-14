@@ -83,10 +83,16 @@ async function run() {
     of people
   ) {
 
+    const {
+        hasQid,
+        isHuman,
+        ...cleanPerson
+    } = person;
+
     stream.write(
-      JSON.stringify(
-        person
-      ) + "\n"
+        JSON.stringify(
+        cleanPerson
+        ) + "\n"
     );
   }
 
