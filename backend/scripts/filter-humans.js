@@ -1,285 +1,70 @@
 const fs = require("fs");
-
-const {
-  loadJsonLines
-} =
-require("../lib/jsonl-reader");
+const readline = require("readline");
 
 const {
   loadEntities
-} =
-require("../lib/wikidata-api");
+} = require("../lib/wikidata-api");
 
 const {
   sleep
-} =
-require("../lib/sleep");
+} = require("../lib/sleep");
 
 const {
   loadState,
   saveState
-} =
-require("../lib/state-manager");
+} = require("../lib/state-manager");
 
 const {
   appendRecords
-} =
-require("../lib/jsonl-writer");
-
-
-const readline =
-  require("readline");
-
-const stream =
-  fs.createReadStream(
-    ALL_ARTICLES_FILE
-  );
-
-const rl =
-  readline.createInterface({
-    input: stream,
-    crlfDelay: Infinity
-  });
-
-  
+} = require("../lib/jsonl-writer");
 
 const {
   ALL_ARTICLES_FILE,
   HUMAN_OUTPUT_FILE,
   HUMAN_STATE_FILE,
   P31_STATS_FILE
-} =
-require("../lib/config");
+} = require("../lib/config");
 
 const BATCH_SIZE = 50;
 
-async function run() {
+async function processBatch(
+  batch,
+  stats
+) {
 
-  const state =
-    loadState(
-      HUMAN_STATE_FILE
+  const qids =
+    batch.map(
+      item =>
+        item.wikidataId
     );
 
-  const allItems =
-    loadJsonLines(
-      ALL_ARTICLES_FILE
-    );
+  let entities;
 
-  let lineNumber =
-    state.lineNumber || 0;
-
-  let processed =
-    state.processed || 0;
-
-  let humans =
-    state.humans || 0;
-
-  let p31Stats =
-    {};
-
-  if (
-    fs.existsSync(
-      P31_STATS_FILE
-    )
-  ) {
-
-    p31Stats =
-      JSON.parse(
-        fs.readFileSync(
-          P31_STATS_FILE,
-          "utf8"
-        )
-      );
-  }
-
-  console.log(
-    `Fortsetzen bei Zeile ${lineNumber.toLocaleString("de-DE")}`
-  );
-
-  while (
-    lineNumber <
-    allItems.length
-  ) {
-
-    const batch = [];
-
-    while (
-      batch.length <
-        BATCH_SIZE &&
-      lineNumber <
-        allItems.length
-    ) {
-
-      const item =
-        allItems[
-          lineNumber
-        ];
-
-      lineNumber++;
-
-      if (     !item.hasQid
-      ) {
-
-        continue;
-      }
-
-      batch.push(
-        item
-      );
-    }
-
-    if (
-      batch.length === 0
-    ) {
-
-      break;
-    }
+  while (true) {
 
     try {
 
-      const entities =
+      entities =
         await loadEntities(
-          batch.map(
-            item =>
-              item.wikidataId
-          )
+          qids
         );
-
-      const results =
-        [];
-
-      for (
-        const item
-        of batch
-      ) {
-
-        const entity =
-          entities[
-            item.wikidataId
-          ];
-
-        if (
-          !entity
-        ) {
-
-          continue;
-        }
-
-        const p31 =
-          entity.claims
-            ?.P31 || [];
-
-        let isHuman =
-          false;
-
-        for (
-          const claim
-          of p31
-        ) {
-
-          const typeId =
-            claim.mainsnak
-              ?.datavalue
-              ?.value
-              ?.id;
-
-          if (
-            !typeId
-          ) {
-
-            continue;
-          }
-
-          p31Stats[
-            typeId
-          ] =
-            (
-              p31Stats[
-                typeId
-              ] || 0
-            ) + 1;
-
-          if (
-            typeId ===
-            "Q5"
-          ) {
-
-            isHuman =
-              true;
-          }
-        }
-
-        if (
-          isHuman
-        ) {
-
-          humans++;
-
-          results.push({
-            ...item,
-            isHuman:
-              true
-          });
-        }
-
-        processed++;
-      }
 
       if (
-        results.length > 0
+        !entities ||
+        typeof entities !== "object"
       ) {
 
-        appendRecords(
-          HUMAN_OUTPUT_FILE,
-          results
+        throw new Error(
+          "Keine gültigen Entities erhalten"
         );
       }
 
-      fs.writeFileSync(
-        P31_STATS_FILE,
-        JSON.stringify(
-          p31Stats,
-          null,
-          2
-        )
-      );
-
-      saveState(
-        HUMAN_STATE_FILE,
-        {
-          lineNumber,
-          processed,
-          humans,
-          updatedAt:
-            new Date().toISOString()
-        }
-      );
-
-      const humanRate =
-        (
-          humans /
-          Math.max(
-            processed,
-            1
-          ) *
-          100
-        ).toFixed(2);
-
-      console.log(
-        `[${processed.toLocaleString("de-DE")}] `
-        + `Menschen= ${humans.toLocaleString("de-DE")} `
-        + `(${humanRate}%)`
-      );
-
-      await sleep(
-        1000
-      );
+      break;
 
     } catch (err) {
 
       if (
-        err.response?.status ===
-        429
+        err.response?.status === 429
       ) {
 
         const retryAfter =
@@ -294,8 +79,254 @@ async function run() {
         );
 
         await sleep(
-          retryAfter *
-          1000
+          retryAfter * 1000
+        );
+
+        continue;
+      }
+
+      throw err;
+    }
+  }
+
+  const humans = [];
+
+  for (const item of batch) {
+
+    const entity =
+      entities?.[
+        item.wikidataId
+      ];
+
+    if (!entity) {
+
+      console.log(
+        `Entity fehlt: ${item.wikidataId}`
+      );
+
+      continue;
+    }
+
+    const p31 =
+      entity.claims
+        ?.P31 || [];
+
+    let isHuman =
+      false;
+
+    for (
+      const claim of p31
+    ) {
+
+      const typeId =
+        claim.mainsnak
+          ?.datavalue
+          ?.value
+          ?.id;
+
+      if (!typeId) {
+        continue;
+      }
+
+      stats[typeId] =
+        (
+          stats[typeId] || 0
+        ) + 1;
+
+      if (
+        typeId === "Q5"
+      ) {
+
+        isHuman = true;
+      }
+    }
+
+    if (isHuman) {
+
+      humans.push({
+        ...item,
+        isHuman: true
+      });
+    }
+  }
+
+  return humans;
+}
+
+async function run() {
+
+  const state =
+    loadState(
+      HUMAN_STATE_FILE
+    );
+
+  let stats =
+    {};
+
+  if (
+    fs.existsSync(
+      P31_STATS_FILE
+    )
+  ) {
+
+    stats =
+      JSON.parse(
+        fs.readFileSync(
+          P31_STATS_FILE,
+          "utf8"
+        )
+      );
+  }
+
+  let processed =
+    state.processed || 0;
+
+  let humans =
+    state.humans || 0;
+
+  let currentLine =
+    0;
+
+  const startLine =
+    state.lineNumber || 0;
+
+  console.log(
+    `Fortsetzen bei Zeile ${startLine.toLocaleString("de-DE")}`
+  );
+
+  const stream =
+    fs.createReadStream(
+      ALL_ARTICLES_FILE
+    );
+
+  const rl =
+    readline.createInterface({
+      input: stream,
+      crlfDelay: Infinity
+    });
+
+  let batch = [];
+
+  for await (
+    const line of rl
+  ) {
+
+    currentLine++;
+
+    if (
+      currentLine <
+      startLine
+    ) {
+
+      continue;
+    }
+
+    const item =
+      JSON.parse(line);
+
+    if (
+      !item.hasQid
+    ) {
+
+      continue;
+    }
+
+    batch.push(item);
+
+    if (
+      batch.length <
+      BATCH_SIZE
+    ) {
+
+      continue;
+    }
+
+    try {
+
+      const results =
+        await processBatch(
+          batch,
+          stats
+        );
+
+      humans +=
+        results.length;
+
+      processed +=
+        batch.length;
+
+      if (
+        results.length > 0
+      ) {
+
+        appendRecords(
+          HUMAN_OUTPUT_FILE,
+          results
+        );
+      }
+
+      fs.writeFileSync(
+        P31_STATS_FILE,
+        JSON.stringify(
+          stats,
+          null,
+          2
+        )
+      );
+
+      saveState(
+        HUMAN_STATE_FILE,
+        {
+          lineNumber:
+            currentLine,
+          processed,
+          humans,
+          updatedAt:
+            new Date()
+              .toISOString()
+        }
+      );
+
+      const rate =
+        (
+          humans /
+          Math.max(
+            processed,
+            1
+          ) * 100
+        ).toFixed(2);
+
+      console.log(
+        `[${processed.toLocaleString("de-DE")}] `
+        + `Menschen=${humans.toLocaleString("de-DE")} `
+        + `(${rate}%)`
+      );
+
+      batch = [];
+
+      await sleep(
+        1000
+      );
+
+    } catch (err) {
+
+      if (
+        err.response?.status === 429
+      ) {
+
+        const retryAfter =
+          parseInt(
+            err.response.headers[
+              "retry-after"
+            ]
+          ) || 60;
+
+        console.log(
+          `429 erhalten. Warte ${retryAfter}s`
+        );
+
+        await sleep(
+          retryAfter * 1000
         );
 
         continue;
@@ -308,7 +339,8 @@ async function run() {
       saveState(
         HUMAN_STATE_FILE,
         {
-          lineNumber,
+          lineNumber:
+            currentLine,
           processed,
           humans,
           updatedAt:
