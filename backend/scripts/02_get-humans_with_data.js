@@ -2,6 +2,7 @@
 const MAX_HUMANS = 5000000;
 const fs = require("fs");
 const readline = require("readline");
+let lastTitle="";
 
 const {
   loadEntities
@@ -172,7 +173,7 @@ async function processBatch(
         isHuman = true;
       }
     }
-
+    lastTitle = item.title;
     if (isHuman) {
 
     humans.push({
@@ -413,9 +414,11 @@ async function run() {
         ).toFixed(2);
 
       console.log(
-        `[${processed.toLocaleString("de-DE")}] `
+        `ln=[${currentLine.toLocaleString("de-DE")}] `
+        + `p=[${processed.toLocaleString("de-DE")}] `
         + `Menschen=${humans.toLocaleString("de-DE")} `
         + `(${rate}%)`
+        + ` ${lastTitle}`
       );
 
       batch = [];
