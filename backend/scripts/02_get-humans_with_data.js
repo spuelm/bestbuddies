@@ -143,6 +143,17 @@ async function processBatch(
         "P106"
       );
 
+    const givenNameIds =
+      getEntityIds(
+        claims,
+        "P735"
+      );
+
+    const familyNameIds =
+      getEntityIds(
+        claims,
+        "P734"
+      );
 
 
     let isHuman =
@@ -174,9 +185,10 @@ async function processBatch(
         isHuman = true;
       }
     }
-    lastTitle = item.title;
+   
     lastArticleLength = item.articleLength;
     if (isHuman) {
+       lastTitle = item.title;
 
     humans.push({
 
@@ -201,7 +213,11 @@ async function processBatch(
 
       nationalityIds,
 
-      occupationIds
+      occupationIds,
+
+      givenNameIds,
+
+      familyNameIds
     });
     }
   }
