@@ -224,13 +224,11 @@ async function processBatch(
 
   return humans;
 }
-
-
 function getYear(
   claims,
   property
-) {
-
+)
+{
   const time =
     claims?.[property]?.[0]
       ?.mainsnak
@@ -242,8 +240,17 @@ function getYear(
     return null;
   }
 
+  const match =
+    time.match(
+      /^([+-]\d+)/
+    );
+
+  if (!match) {
+    return null;
+  }
+
   return parseInt(
-    time.substring(1, 5),
+    match[1],
     10
   );
 }
