@@ -3,6 +3,7 @@ const MAX_HUMANS = 5000000;
 const fs = require("fs");
 const readline = require("readline");
 let lastTitle="";
+let lastArticleLength=0;
 
 const {
   loadEntities
@@ -174,6 +175,7 @@ async function processBatch(
       }
     }
     lastTitle = item.title;
+    lastArticleLength = item.articleLength;
     if (isHuman) {
 
     humans.push({
@@ -418,6 +420,7 @@ async function run() {
         + `p=[${processed.toLocaleString("de-DE")}] `
         + `Menschen=${humans.toLocaleString("de-DE")} `
         + `(${rate}%)`
+        + ` AL=${lastArticleLength} `
         + ` ${lastTitle}`
       );
 
