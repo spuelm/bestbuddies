@@ -1,5 +1,5 @@
 
-const MAX_HUMANS = 50000;
+const MAX_HUMANS = 5000000;
 const fs = require("fs");
 const readline = require("readline");
 
