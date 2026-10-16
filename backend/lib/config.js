@@ -59,8 +59,23 @@ module.exports = {
     path.join(
       __dirname,
       "../data/century-index.json"
-    )
+    ),
 
+  OCCUPATION_GROUP_CACHE_FILE:
+  path.join(
+    __dirname,
+    "../data/occupation/occupation-group-cache.json"
+  ),
+OCCUPATION_GROUP_STATE_FILE:
+  path.join(
+    __dirname,
+    "../data/occupation/occupation-group-state.json"
+  ),
 
+ OCCUPATION_GROUP_ERRORS_FILE:
+  path.join(
+    __dirname,
+    "../data/occupation/occupation-group-errors.jsonl"
+  )
 
 };

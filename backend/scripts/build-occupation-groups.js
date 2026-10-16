@@ -2,6 +2,9 @@ const fs = require("fs");
 const readline = require("readline");
 const path = require("path");
 
+
+
+
 const {
   loadEntities
 } = require("../lib/wikidata-api");
@@ -15,35 +18,29 @@ const {
   saveState
 } = require("../lib/state-manager");
 
-const INPUT_FILE =
-  path.join(
-    __dirname,
-    "../data/person_candidates_with_centuries.jsonl"
-  );
+const {
+  PERSON_CANDIDATES_WITH_CENTURIES_FILE,
+  OCCUPATION_GROUP_CACHE_FILE,
+  OCCUPATION_GROUP_STATE_FILE,
+  OCCUPATION_GROUP_ERRORS_FILE
+} = require("../lib/config");
 
-const CACHE_FILE =
-  path.join(
-    __dirname,
-    "../data/occupation-group-cache.json"
-  );
+const INPUT_FILE = PERSON_CANDIDATES_WITH_CENTURIES_FILE
 
-const STATE_FILE =
-  path.join(
-    __dirname,
-    "../data/occupation-group-state.json"
-  );
+const CACHE_FILE = OCCUPATION_GROUP_CACHE_FILE;
 
-const ERROR_FILE =
-  path.join(
-    __dirname,
-    "../data/occupation-group-errors.jsonl"
-  );
+const STATE_FILE = OCCUPATION_GROUP_STATE_FILE;
+
+const ERROR_FILE = OCCUPATION_GROUP_ERRORS_FILE;
 
 const TARGET_GROUPS = [
   "literatur",
   "musiker",
   "autor",
   "schauspieler",
+  "künstler",
+  "maler",
+  "komponist",
   "wissenschaft",
   "wissenschaftler",
   "schriftsteller",
@@ -217,25 +214,32 @@ async function resolveGroup(
       match
     ) {
 
-      cache[
-        startQid
-      ] = {
+    for (
+    const node
+    of pathHistory
+    )
+    {
+    cache[
+        node.qid
+    ] = {
 
         label:
-          startLabel,
+        node.label,
 
         group:
-          match,
+        match,
 
         resolvedVia:
-          label,
+        label,
 
         resolvedViaQid:
-          qid,
+        qid
 
-        path:
-          [...pathHistory]
-      };
+        // path:
+        // [...pathHistory]
+    };
+    }
+
 
       return match;
     }
