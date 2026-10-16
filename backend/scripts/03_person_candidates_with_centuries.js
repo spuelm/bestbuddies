@@ -17,6 +17,37 @@ const OUTPUT_FILE = PERSON_CANDIDATES_WITH_CENTURIES_FILE;
 
 const INDEX_FILE = CENTURY_INDEX_FILE;
 
+function getCentury(
+  year
+) {
+
+  if (
+    year === null ||
+    year === undefined
+  ) {
+
+    return null;
+  }
+
+  if (
+    year > 0
+  ) {
+
+    return (
+      Math.floor(
+        (year - 1) / 100
+      ) + 1
+    );
+  }
+
+  return -(
+    Math.floor(
+      (
+        Math.abs(year) - 1
+      ) / 100
+    ) + 1
+  );
+}
 
 function getCenturies(
   birthYear,
@@ -33,30 +64,76 @@ function getCenturies(
       .getFullYear();
 
   const startCentury =
-    Math.floor(
-      (birthYear - 1) / 100
-    ) + 1;
+    getCentury(
+      birthYear
+    );
 
   const endCentury =
-    Math.floor(
-      (endYear - 1) / 100
-    ) + 1;
+    getCentury(
+      endYear
+    );
 
-  const centuries =
+  const result =
     [];
 
-  for (
-    let c =
-      startCentury;
-    c <=
-      endCentury;
-    c++
+  if (
+    startCentury < 0 &&
+    endCentury > 0
   ) {
 
-    centuries.push(c);
+    for (
+      let c =
+        startCentury;
+      c <= -1;
+      c++
+    ) {
+
+      result.push(c);
+    }
+
+    for (
+      let c = 1;
+      c <= endCentury;
+      c++
+    ) {
+
+      result.push(c);
+    }
+
+    return result;
   }
 
-  return centuries;
+  if (
+    startCentury <=
+    endCentury
+  ) {
+
+    for (
+      let c =
+        startCentury;
+      c <=
+        endCentury;
+      c++
+    ) {
+
+      result.push(c);
+    }
+
+  } else {
+
+    for (
+      let c =
+        startCentury;
+      c >=
+        endCentury;
+      c--
+    ) {
+
+      result.push(c);
+    }
+  }
+
+  return result;
 }
 
 async function run() {

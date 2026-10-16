@@ -36,6 +36,7 @@ function findContemporaries(
       `Person ${targetQid} nicht gefunden`
     );
   }
+  let targetAge=target.deathYear - target.birthYear; 
 
   const minOverlap =
     options.minOverlapYears || 10;
@@ -121,6 +122,7 @@ function findContemporaries(
       continue;
     }
 
+  
     result.push({
 
       qid,
@@ -150,10 +152,27 @@ function findContemporaries(
     });
   }
 
+const maxArticleLength = result.reduce(
+    (max, item) => Math.max(max, item.articleLength),
+    0
+);
+
+for (const item of result) {
+
+    item.rank = Math.round((item.overlapYears / targetAge * 100) ** 2 
+                              + (item.articleLength / maxArticleLength * 100) ** 2 )
+}
+  // result.sort(
+  //   (a, b) =>
+  //     b.articleLength -
+  //     a.articleLength
+  // );
+
+
   result.sort(
     (a, b) =>
-      b.articleLength -
-      a.articleLength
+      b.rank -
+      a.rank
   );
 
   return result;

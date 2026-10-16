@@ -4,6 +4,10 @@ const {
 require(
   "../lib/find-contemporaries"
 );
+const {
+  PERSON_CANDIDATES_WITH_CENTURIES_FILE,
+  CENTURY_INDEX_FILE
+} = require("../lib/config");
 
 const fs =
   require("fs");
@@ -12,18 +16,12 @@ const readline =
 const path =
   require("path");
 
-const PEOPLE_FILE =
-  path.join(
-    __dirname,
-    "../data/person_candidates_with_centuries.jsonl"
-  );
+const PEOPLE_FILE =PERSON_CANDIDATES_WITH_CENTURIES_FILE;
 
-const CENTURY_INDEX_FILE =
-  path.join(
-    __dirname,
-    "../data/century-index.json"
-  );
 
+
+const rootPersonQid = "Q5879"; // Goethe
+    
 async function loadPeople() {
 
   const peopleByQid =
@@ -72,13 +70,22 @@ async function run() {
         "utf8"
       )
     );
+  const targetPerson =
+    peopleByQid[
+      rootPersonQid
+    ];
+    
 
+    
   const result =
     findContemporaries(
-      "Q5879", // Goethe
+      targetPerson.wikidataId,
       peopleByQid,
       centuryIndex
     );
+
+
+
 
   console.log(
     JSON.stringify(
@@ -90,6 +97,13 @@ async function run() {
       2
     )
   );
+console.log(
+  `Gefundene Zeitgenossen: ${result.length.toLocaleString("de-DE")}`
+);
+
+console.log(
+  `Angezeigt werden die ersten ${Math.min(100, result.length)} Treffer`
+);
 }
 
 run().catch(
