@@ -47,7 +47,16 @@ module.exports = {
       DATA_DIR,
       "person_candidates_sorted_state.json"
     ),
-
+   PERSONS_WITH_LINKS_FILE: 
+  path.join(
+    __dirname,
+    "../data/with_links/persons_with_linkscore.jsonl"
+  ),
+   PERSONS_WITH_LINKS_STATE_FILE:
+    path.join(
+      __dirname,
+      "../data/with_links/linkscore_state.json"
+    ),
   // Phase 3: Get all humans with centuries and century index  
   PERSON_CANDIDATES_WITH_CENTURIES_FILE:
       path.join(

@@ -20,7 +20,9 @@ const PEOPLE_FILE =PERSON_CANDIDATES_WITH_CENTURIES_FILE;
 
 
 
-const rootPersonQid = "Q5879"; // Goethe
+//const rootPersonQid = "Q5879"; // Goethe
+const rootPersonQid = "Q37030"; // Thomas mann
+
     
 async function loadPeople() {
 

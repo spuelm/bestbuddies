@@ -35,25 +35,24 @@ const ERROR_FILE = OCCUPATION_GROUP_ERRORS_FILE;
 
 const TARGET_GROUPS = [
   "literatur",
-  "musiker",
-  "autor",
+   "autor",
   "schauspieler",
-  "künstler",
+  "musiker",
   "maler",
   "komponist",
-  "wissenschaft",
-  "wissenschaftler",
-  "schriftsteller",
+  "religion",
+   "schriftsteller",
   "politik",
   "philosophie",
   "kunst",
-  "religion",
   "militär",
   "wirtschaft",
   "sport",
   "medizin",
   "person",
-  "diplomat"
+   "diplomat",
+    "künstler",
+  "wissenschaft"
 ];
 
 function normalize(text) {
@@ -248,9 +247,10 @@ async function resolveGroup(
       entity.claims
         ?.P279 || [];
 
-     const parent=parents[0];
-        {
-
+      if (
+      parents.length > 0
+    )   {
+      const parent=parents[0];
       const parentQid =
         parent.mainsnak
           ?.datavalue
@@ -377,26 +377,35 @@ async function run() {
       }
     }
   }
+  const occupationsToProcess =
+    [...occupations]
+      .sort();
 
   console.log(
-    `${occupations.size.toLocaleString("de-DE")} neue Berufe`
+    `${occupationsToProcess.length.toLocaleString("de-DE")} neue Berufe`
   );
 
   let processed =
     state.processed || 0;
 
-  for (
-    const occupationId
-    of occupations
-  ) {
+for (
+  let i = processed;
+  i < occupationsToProcess.length;
+  i++
+)
+  
+  {
 
+      const occupationId =
+    occupationsToProcess[i];
     const group =
       await resolveGroup(
         occupationId,
         cache
       );
 
-    processed++;
+    processed =
+    i + 1;
 
     cache[
       occupationId
