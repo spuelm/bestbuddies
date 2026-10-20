@@ -15,7 +15,7 @@ const OUTPUT_FILE =PERSONS_WITH_LINKS_FILE;
 
 const STATE_FILE =PERSONS_WITH_LINKS_STATE_FILE;
 
-const MAX_PERSONS = 50000;
+const MAX_PERSONS = 5000000;
 
 function sleep(ms) {
 
@@ -64,14 +64,11 @@ function saveState(
   );
 }
 
-async function getLinkScore(
-  title
-) {
+async function getLinkScore(title) {
 
   let totalLinks = 0;
 
-  let lhcontinue =
-    null;
+  let lhcontinue = null;
 
   while (true) {
 
@@ -80,14 +77,17 @@ async function getLinkScore(
       const params = {
         action: "query",
         prop: "linkshere",
+
         titles: title,
+
         lhlimit: "max",
+
+        lhnamespace: 0,
+
         format: "json"
       };
 
-      if (
-        lhcontinue
-      ) {
+      if (lhcontinue) {
 
         params.lhcontinue =
           lhcontinue;
@@ -107,19 +107,31 @@ async function getLinkScore(
         );
 
       const pages =
-        response.data.query
-          .pages;
+        response?.data
+          ?.query
+          ?.pages || {};
 
       const page =
         Object.values(
           pages
         )[0];
 
+      if (!page) {
+
+        return totalLinks;
+      }
+
+      const links =
+        page.linkshere || [];
+
+      const validLinks =
+        links.filter(
+          link =>
+            !link.redirect
+        );
+
       totalLinks +=
-        (
-          page.linkshere ||
-          []
-        ).length;
+        validLinks.length;
 
       if (
         !response.data.continue
@@ -129,33 +141,29 @@ async function getLinkScore(
       }
 
       lhcontinue =
-        response.data
-          .continue
+        response.data.continue
           .lhcontinue;
 
     } catch (err) {
 
       if (
-        err.response
-          ?.status ===
+        err.response?.status ===
         429
       ) {
 
         const retryAfter =
           parseInt(
-            err.response
-              .headers[
+            err.response.headers[
               "retry-after"
             ]
           ) || 60;
 
         console.log(
-          `429 bei ${title}. Warte ${retryAfter}s`
+          `        429 bei ${title}. Warte ${retryAfter}s`
         );
 
         await sleep(
-          retryAfter *
-          1000
+          retryAfter * 1000
         );
 
         continue;
@@ -262,19 +270,25 @@ async function run() {
         0
       ) {
 
-        saveState(
-          {
-            lineNumber,
-            processed,
-            updatedAt:
-              new Date()
-                .toISOString()
-          }
-        );
+        saveState({
+          lineNumber,
+          processed,
+
+          lastQid:
+            person.wikidataId,
+
+          lastTitle:
+            person.title,
+
+          updatedAt:
+            new Date()
+              .toISOString()
+        });
 
         console.log(
           `[${processed.toLocaleString("de-DE")}] ` +
           `${person.title} ` +
+          `articlen: ${person.articleLength} ` +
           `→ Linkscore=${linkScore}`
         );
       }
@@ -290,15 +304,23 @@ async function run() {
         err.message
       );
 
-      saveState(
-        {
-          lineNumber,
-          processed,
-          updatedAt:
-            new Date()
-              .toISOString()
-        }
-      );
+      saveState({
+        lineNumber:
+          lineNumber - 1,
+
+        processed,
+
+        lastQid:
+          person.wikidataId,
+
+        lastTitle:
+          person.title,
+
+        updatedAt:
+          new Date()
+            .toISOString()
+      });
+    
     }
   }
 

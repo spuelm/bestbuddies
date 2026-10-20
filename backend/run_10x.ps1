@@ -1,7 +1,7 @@
 for ($i = 1; $i -le 10; $i++) {
     Write-Host "Durchlauf $i von 10 startet..."
 
-    node .\scripts\02_get-humans_with_data.js
+    node .\scripts\build-linkscore.js
 
     Write-Host "ExitCode: $LASTEXITCODE"
 
