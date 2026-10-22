@@ -13,10 +13,6 @@ const {
 
 
 const INPUT_FILE = HUMAN_OUTPUT_FILE_SORTED;
-  // path.join(
-  //   __dirname,
-  //   "../data/person_candidates_sorted.jsonl"
-  // );
 
 const OUTPUT_FILE =PERSONS_LINKSCORE_PASS1_FILE;
 
@@ -269,15 +265,15 @@ async function run() {
             (
               page.linkshere ||
               []
-            ).length,
+            ).length
 
-          hasMoreLinks,
+         // hasMoreLinks,
 
-          lhcontinue:
-            hasMoreLinks
-              ? data.continue
-                  .lhcontinue
-              : null
+          // lhcontinue:
+          //   hasMoreLinks
+          //     ? data.continue
+          //         .lhcontinue
+          //     : null
 
         }) + "\n"
       );
