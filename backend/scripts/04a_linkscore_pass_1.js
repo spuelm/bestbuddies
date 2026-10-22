@@ -3,23 +3,25 @@ const path = require("path");
 const readline = require("readline");
 const axios = require("axios");
 
-const INPUT_FILE =
-  path.join(
-    __dirname,
-    "../data/person_candidates_sorted.jsonl"
-  );
 
-const OUTPUT_FILE =
-  path.join(
-    __dirname,
-    "../data/persons_linkscore_pass1.jsonl"
-  );
+const {
+  HUMAN_OUTPUT_FILE_SORTED,
+  PERSONS_LINKSCORE_PASS1_FILE,
+  PERSONS_LINKSCORE_PASS1_STATE_FILE
+} = require("../lib/config");
 
-const STATE_FILE =
-  path.join(
-    __dirname,
-    "../data/linkscore_pass1_state.json"
-  );
+
+
+const INPUT_FILE = HUMAN_OUTPUT_FILE_SORTED;
+  // path.join(
+  //   __dirname,
+  //   "../data/person_candidates_sorted.jsonl"
+  // );
+
+const OUTPUT_FILE =PERSONS_LINKSCORE_PASS1_FILE;
+
+const STATE_FILE =PERSONS_LINKSCORE_PASS1_STATE_FILE;
+
 
 const BATCH_SIZE = 50;
 const MAX_PERSONS = 5000000;
