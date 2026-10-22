@@ -20,8 +20,8 @@ const PEOPLE_FILE =PERSON_CANDIDATES_WITH_CENTURIES_FILE;
 
 
 
-//const rootPersonQid = "Q5879"; // Goethe
-const rootPersonQid = "Q37030"; // Thomas mann
+const rootPersonQid = "Q5879"; // Goethe
+//const rootPersonQid = "Q37030"; // Thomas mann
 
     
 async function loadPeople() {
@@ -88,12 +88,12 @@ async function run() {
 
 
 
-
+ const displaylenght = 50;
   console.log(
     JSON.stringify(
       result.slice(
         0,
-        50
+        displaylenght
       ),
       null,
       2
@@ -104,7 +104,7 @@ console.log(
 );
 
 console.log(
-  `Angezeigt werden die ersten ${Math.min(100, result.length)} Treffer`
+  `Angezeigt werden die ersten ${Math.min(displaylenght, result.length)} Treffer`
 );
 }
 

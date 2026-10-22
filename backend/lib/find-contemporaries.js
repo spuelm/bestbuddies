@@ -140,9 +140,14 @@ function findContemporaries(
 
       overlapYears:
         overlap,
+      isOlder:
+        person.birthYear <
+        target.birthYear,
 
       articleLength:
         person.articleLength,
+      linkScore:
+        person.linkScore,
 
       nationalityIds:
         person.nationalityIds || [],
@@ -152,27 +157,21 @@ function findContemporaries(
     });
   }
 
-const maxArticleLength = result.reduce(
-    (max, item) => Math.max(max, item.articleLength),
-    0
-);
-
-for (const item of result) {
-
-    item.rank = Math.round((item.overlapYears / targetAge * 100) ** 2 
-                              + (item.articleLength / maxArticleLength * 100) ** 2 )
-}
-  // result.sort(
-  //   (a, b) =>
-  //     b.articleLength -
-  //     a.articleLength
-  // );
+  const maxArticleLength = result.reduce(
+      (max, item) => Math.max(max, item.articleLength),
+      0
+  );
 
 
   result.sort(
-    (a, b) =>
-      b.rank -
-      a.rank
+    (a, b) => {
+       const linkcompare = (b.linkScore || 0) - (a.linkScore || 0);
+       if (linkcompare !== 0) {
+         return linkcompare;
+       }
+       return b.articleLength - a.articleLength;
+    }
+
   );
 
   return result;

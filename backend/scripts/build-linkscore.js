@@ -82,6 +82,8 @@ async function getLinkScore(title) {
 
         lhlimit: "max",
 
+        lhshow: "!redirect",
+
         lhnamespace: 0,
 
         format: "json"
