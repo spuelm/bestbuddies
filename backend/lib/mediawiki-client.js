@@ -1,3 +1,10 @@
+require("dotenv")
+  .config();
+// needs
+// MEDIAWIKI_PASSWORD
+// MEDIAWIKI_USERNAME
+
+
 const axios =
   require("axios");
 
@@ -22,18 +29,42 @@ let client =
   null;
 
 async function createClient() {
+  console.log ( process.env
+           .MEDIAWIKI_USERNAME)
 
+                    
+    if (
+    ! process.env
+           .MEDIAWIKI_USERNAME ||
+    ! process.env
+           .MEDIAWIKI_PASSWORD
+    )
+    {
+    throw new Error(
+        "MEDIAWIKI_USERNAME oder MEDIAWIKI_PASSWORD fehlt"
+    );
+    }
+
+
+    
   const jar =
     new CookieJar();
+
 
   client =
     wrapper(
       axios.create({
+        headers: {
+        "User-Agent":
+            "ZeitzeugenBot/1.0 (private research project; mail@example.de)"
+        },
+
         jar,
         withCredentials:
           true
       })
     );
+
 
   const tokenResponse =
     await client.get(
@@ -53,7 +84,8 @@ async function createClient() {
       .query
       .tokens
       .logintoken;
-
+try{
+  const loginResponse =    
   await client.post(
     WIKI_API,
     new URLSearchParams({
@@ -61,12 +93,12 @@ async function createClient() {
       action: "login",
 
       lgname:
-        process.env
-          .WIKI_BOT_USER,
+         process.env
+           .MEDIAWIKI_USERNAME,
 
       lgpassword:
         process.env
-          .WIKI_BOT_PASSWORD,
+          .MEDIAWIKI_PASSWORD,
 
       lgtoken:
         loginToken,
@@ -74,6 +106,33 @@ async function createClient() {
       format: "json"
     })
   );
+
+
+console.log(
+  JSON.stringify(
+    loginResponse.data,
+    null,
+    2
+  )
+);
+}
+catch (err){
+    if (err.response) {
+
+    console.log(
+        "Status:",
+        err.response.status
+    );
+
+    console.log(
+        err.response.data
+    );
+    throw err
+    }
+
+}
+
+
 
   console.log(
     "Wikipedia Login erfolgreich"
@@ -85,8 +144,13 @@ async function createClient() {
 async function getClient() {
 
   if (!client) {
-
+   try{
     await createClient();
+   } catch (err) {
+
+    console.log(err)
+    throw err
+   }
   }
 
   return client;

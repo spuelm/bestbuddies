@@ -1,10 +1,22 @@
 const axios =
   require("axios");
 
+
+const {
+  login
+} = require(
+  "../lib/mediawiki-client"
+);
+
 async function loadEntities(qids) {
 
+const client =
+  await login();
+
+  console.log(client);
+
   const response =
-    await axios.get(
+    await client.get(
       "https://www.wikidata.org/w/api.php",
       {
         params: {
