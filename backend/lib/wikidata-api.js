@@ -13,8 +13,7 @@ async function loadEntities(qids) {
           format: "json"
         },
         headers: {
-          "User-Agent":
-            "BestBuddiesBot/0.1"
+             "Api-User-Agent": "ZeitzeugenBot/1.0 (https://de.wikipedia.org/wiki/Benutzer:ZeitzeugenBot; s.puelm@gmx.de)"
         }
       }
     );

@@ -7,7 +7,8 @@ df=pd.read_json("C:/Users/steph/OneDrive/Projekte/Bestbuddies/git/bestbuddies/ba
 print(f"Total number of persons: {len(df)}")
 anzahl = (df["linkScore"] == 0).sum()
 print(f"Number of persons without  linkScore: {anzahl}")
-print(f"Number of persons with     linkScore:  {(len(df)-anzahl)}")
+print(f"Number of persons with     linkScore: {(len(df)-anzahl)}")
 print (f"Percentage of persons without  linkScore: {anzahl/len(df)*100:.2f}%")
 
-print(df.loc[df["linkScore"] == 0, "title"])
+print(df.loc[df["linkScore"].between(1,499) > 0, "title"])
+
