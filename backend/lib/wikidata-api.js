@@ -18,8 +18,7 @@ async function loadEntities(qids) {
   await getClient();
   
 
-    console.log("hallo");
-  
+
   const response =
     await client.get(
       "https://www.wikidata.org/w/api.php",

@@ -10,5 +10,6 @@ print(f"Number of persons without  linkScore: {anzahl}")
 print(f"Number of persons with     linkScore: {(len(df)-anzahl)}")
 print (f"Percentage of persons without  linkScore: {anzahl/len(df)*100:.2f}%")
 
-print(df.loc[df["linkScore"].between(1,499) > 0, "title"])
+print(df["linkScore"].between(1,499).sum())
 
+print((df["linkScore"] > 500).sum())

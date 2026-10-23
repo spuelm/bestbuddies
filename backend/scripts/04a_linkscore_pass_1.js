@@ -21,6 +21,11 @@ const STATE_FILE =PERSONS_LINKSCORE_PASS1_STATE_FILE;
 
 const BATCH_SIZE = 50;
 const MAX_PERSONS = 5000000;
+const {
+  getClient
+} = require(
+  "../lib/mediawiki-client"
+);
 
 function sleep(ms) {
 
@@ -84,9 +89,15 @@ async function queryBatch(
               p.title
           )
           .join("|");
+   
+
+      const client =
+      await getClient();
+  
 
       const response =
-        await axios.get(
+        await client.get(
+    //  await axios.get(
           "https://de.wikipedia.org/w/api.php",
           {
             params: {
