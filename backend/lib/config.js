@@ -87,9 +87,24 @@ module.exports = {
     ),
 
 
+  PERSONS_LINKSCORE_PASS2_FILE:
+    path.join(
+      __dirname,
+      "../data//"+PERSON_WITH_LINKS+"_linkscore/"+PERSON_WITH_LINKS+"c_persons_linkscore_pass2.jsonl"
+    ),
+
+  PERSONS_LINKSCORE_PASS2_STATE_FILE:
+    path.join(
+      __dirname,
+      "../data//"+PERSON_WITH_LINKS+"_linkscore//"+PERSON_WITH_LINKS+"c_linkscore_pass2_state.json"
+    ),
 
 
-
+  PERSONS_LINKSCORE_PASS2_FILE_SORTED:
+    path.join(
+      __dirname,
+      "../data//"+PERSON_WITH_LINKS+"_linkscore/"+PERSON_WITH_LINKS+"d_persons_linkscore_pass1_sorted.jsonl"
+    ),
 
 
 
