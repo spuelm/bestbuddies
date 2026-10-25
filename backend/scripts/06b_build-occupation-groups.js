@@ -33,35 +33,92 @@ const {
   require("../lib/state-manager");
 
 const TARGET_GROUPS = [
-  { name: "literatur", goup: "literatur" },
-  {
-    name: "musik",
-    "music",
-    "politik",
-    "politic",
-    "philosoph",
-    "technik",
-    "technic",
-    "kunst",
-    "künstler",
-    "religion",
-    "religious",
-    "theologie",
-    "theology",
-    "militär",
-    "military",
-    "sport",
-    "medizin",
-    "medic",
-    "arzt",
-    "physicist",
-    "wirtschaft",
-    "science",
-    "wissenschaft",
-    "economy",
-    "person",
-    "creativ",
-    "art"
+  { name: "literat", group: "literatur" },
+  { name: "writer", group: "literatur" },
+  { name: "autor", group: "literatur" },
+  { name: "musik", group: "musik" },
+  { name: "music", group: "musik" },
+  { name: "singer", group: "musik" },
+  interpret
+  composer
+
+  { name: "politik", group: "politik" },
+  { name: "politic", group: "politik" },
+  { name: "radikaler", group: "politik" },
+  { name: "bürgerrechtler", group: "politik" },
+  { name: "anführer", group: "politik" },
+  { name: "aktivist", group: "politik" },
+  { name: "herrschaft", group: "politik" },
+  { name: "regierung", group: "politik" },
+  { name: "beamter", group: "politik" },
+  { name: "bürgermeister", group: "politik" },
+  { name: "proprietor", group: "politik" },
+  { name: "gauleitung", group: "politik" },
+  { name: "bürgermeister", group: "politik" },
+  { name: "bürgermeister", group: "politik" },
+  { name: "bürgermeister", group: "politik" },
+  { name: "bürgermeister", group: "politik" },
+
+
+
+  { name: "philosoph", group: "philosophie" },
+  { name: "techni", group: "technik" },
+  { name: "informatiker", group: "technik" },
+
+  { name: "kunst", group: "kunst" },
+  { name: "künstler", group: "kunst" },
+  { name: "theater", group: "kunst" },
+  { name: "tanz", group: "kunst" },
+  { name: "fotograf", group: "kunst" },
+  { name: "photogra", group: "kunst" },
+  { name: "architekt", group: "kunst" },
+
+
+
+
+
+
+  { name: "religi", group: "religion" },
+  { name: "rabbi", group: "religion" },
+  { name: "bishop", group: "religion" },
+  { name: "islamic", group: "religion" },
+  { name: "mitropolit", group: "religion" },
+
+
+
+  { name: "theolog", group: "religion" },
+  { name: "milit", group: "militär" },
+  { name: "soldat", group: "militär" },
+  { name: "marschall", group: "militär" },
+  { name: "offizier", group: "militär" },
+
+
+  { name: "sport", group: "sport" },
+  { name: "medizin", group: "medizin" },
+  { name: "medic", group: "medizin" },
+  { name: "arzt", group: "medizin" },
+  { name: "physicist", group: "medizin" },
+  { name: "wirtschaft", group: "wirtschaft" },
+  { name: "management", group: "wirtschaft" },
+
+
+  { name: "economy", group: "wirtschaft" },
+  { name: "wissenschaft", group: "wissenschaft" },
+  { name: "ingenieur", group: "wissenschaft" },
+  { name: "museum", group: "wissenschaft" },
+  { name: "profess", group: "wissenschaft" },
+  { name: "forsch", group: "wissenschaft" },
+  { name: "academi", group: "wissenschaft" },
+  { name: "physics", group: "wissenschaft" },
+  { name: "research", group: "wissenschaft" },
+  { name: "scienti", group: "wissenschaft" },
+
+
+  { name: "science", group: "wissenschaft" },
+  { name: "person", group: "person" },
+  { name: "art", group: "kunst" }
+
+
 ];
 
 function normalize(text) {
@@ -258,7 +315,7 @@ async function resolveGroup(
       TARGET_GROUPS.find(
         group =>
           label.includes(
-            group
+            group.name
           )
       );
 
@@ -279,7 +336,7 @@ async function resolveGroup(
             node.label,
 
           group:
-            match,
+            match.group,
 
           index: index,
           resolvedVia:
@@ -455,7 +512,7 @@ async function run() {
       const current =
         i + 1;
 
-      console.log('[' + i + '] current=', current, 'processed=', processed, 'occupationId=', occupationId, 'group=', group);
+      console.log('current=', current, 'processed=', processed, 'occupationId=', occupationId, 'group=', group);
 
       fs.writeFileSync(
         CACHE_FILE,
