@@ -2,12 +2,10 @@ const fs = require("fs");
 const readline = require("readline");
 const path = require("path");
 const {
-
-  HUMAN_OUTPUT_FILE_SORTED,
+  PERSONS_LINKSCORE_PASS2_FILE,
   USED_OCCUPATIONS_FILE
-} = require("../lib/config");
-
-const INPUT_FILE =HUMAN_OUTPUT_FILE_SORTED;
+} = require("../lib/config"); 6
+const INPUT_FILE = PERSONS_LINKSCORE_PASS2_FILE;
 
 const OUTPUT_FILE = USED_OCCUPATIONS_FILE;
 

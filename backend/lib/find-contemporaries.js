@@ -38,8 +38,7 @@ function findContemporaries(
   }
   let targetAge=target.deathYear - target.birthYear; 
 
-  const minOverlap =
-    options.minOverlapYears || 10;
+  const minOverlap =    options.minOverlapYears || 10;
 
   const candidateIds =
     new Set();

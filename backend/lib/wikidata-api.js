@@ -15,8 +15,8 @@ async function loadEntities(qids) {
 
 
   const client =
-  await getClient();
-  
+    await getClient();
+
 
 
   const response =
@@ -29,12 +29,12 @@ async function loadEntities(qids) {
           format: "json"
         },
         headers: {
-             "Api-User-Agent": "ZeitzeugenBot/1.0 (https://de.wikipedia.org/wiki/Benutzer:ZeitzeugenBot; s.puelm@gmx.de)"
+          "Api-User-Agent": "ZeitzeugenBot/1.0 (https://de.wikipedia.org/wiki/Benutzer:ZeitzeugenBot; s.puelm@gmx.de)"
         }
       }
     );
-    
-    console.log("hallo2");
+
+
 
   return (
     response?.data?.entities ||
@@ -42,7 +42,7 @@ async function loadEntities(qids) {
   );
 
 
- 
+
 }
 
 module.exports = {

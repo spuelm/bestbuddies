@@ -8,44 +8,60 @@ const {
   USED_OCCUPATIONS_FILE
 } = require("../lib/config");
 
-const INPUT_FILE =USED_OCCUPATIONS_FILE;
+const INPUT_FILE = USED_OCCUPATIONS_FILE;
 
-const CACHE_FILE =OCCUPATION_GROUP_CACHE_FILE;
+const CACHE_FILE = OCCUPATION_GROUP_CACHE_FILE;
 
-const STATE_FILE =OCCUPATION_GROUP_STATE_FILE;
+const STATE_FILE = OCCUPATION_GROUP_STATE_FILE;
 
-const ERROR_FILE =OCCUPATION_GROUP_ERRORS_FILE;
+const ERROR_FILE = OCCUPATION_GROUP_ERRORS_FILE;
 
 const {
   loadEntities
 } =
-require("../lib/wikidata-api");
+  require("../lib/wikidata-api");
 
 const {
   sleep
 } =
-require("../lib/sleep");
+  require("../lib/sleep");
 
 const {
   loadState,
   saveState
 } =
-require("../lib/state-manager");
+  require("../lib/state-manager");
 
 const TARGET_GROUPS = [
-  "literatur",
-  "musik",
-  "wissenschaft",
-  "wissenschaftler",
-  "politik",
-  "philosophie",
-  "kunst",
-  "religion",
-  "militär",
-  "wirtschaft",
-  "sport",
-  "medizin",
-  "person"
+  { name: "literatur", goup: "literatur" },
+  {
+    name: "musik",
+    "music",
+    "politik",
+    "politic",
+    "philosoph",
+    "technik",
+    "technic",
+    "kunst",
+    "künstler",
+    "religion",
+    "religious",
+    "theologie",
+    "theology",
+    "militär",
+    "military",
+    "sport",
+    "medizin",
+    "medic",
+    "arzt",
+    "physicist",
+    "wirtschaft",
+    "science",
+    "wissenschaft",
+    "economy",
+    "person",
+    "creativ",
+    "art"
 ];
 
 function normalize(text) {
@@ -90,7 +106,7 @@ async function loadEntityWithRetry(
         const retryAfter =
           parseInt(
             err.response.headers[
-              "retry-after"
+            "retry-after"
             ]
           ) || 60;
 
@@ -160,8 +176,8 @@ async function resolveGroup(
         cache[qid].group;
 
       for (
-        const node
-        of pathHistory
+        const [index, node]
+        of pathHistory.entries()
       ) {
 
         cache[
@@ -177,13 +193,14 @@ async function resolveGroup(
           resolvedVia:
             cache[qid]
               .resolvedVia,
-
+          index: index,
           resolvedViaQid:
             cache[qid]
               .resolvedViaQid,
 
-          path:
-            [...pathHistory]
+          ...(index === 0 && pathHistory.length > 1
+            ? { path: [...pathHistory] }
+            : {/*do nothing*/ })
         };
       }
 
@@ -250,8 +267,8 @@ async function resolveGroup(
     ) {
 
       for (
-        const node
-        of pathHistory
+        const [index, node]
+        of pathHistory.entries()
       ) {
 
         cache[
@@ -264,14 +281,15 @@ async function resolveGroup(
           group:
             match,
 
+          index: index,
           resolvedVia:
             label,
 
           resolvedViaQid:
             qid,
-
-          path:
-            [...pathHistory]
+          ...(index === 0 && pathHistory.length > 1
+            ? { path: [...pathHistory] }
+            : {/*do nothing*/ })
         };
       }
 
@@ -312,8 +330,8 @@ async function resolveGroup(
   }
 
   for (
-    const node
-    of pathHistory
+    const [index, node]
+    of pathHistory.entries()
   ) {
 
     cache[
@@ -331,9 +349,10 @@ async function resolveGroup(
 
       resolvedViaQid:
         null,
+      ...(index === 0 && pathHistory.length > 1
+        ? { path: [...pathHistory] }
+        : {/*do nothing*/ })
 
-      path:
-        [...pathHistory]
     };
   }
 
@@ -404,8 +423,8 @@ async function run() {
 
       startIndex =
         idx + 1;
-      }
-  }    
+    }
+  }
 
   let processed =
     state.processed || 0;
@@ -416,13 +435,13 @@ async function run() {
   for (
     let i = startIndex;
     i <
-      occupationsToProcess.length;
+    occupationsToProcess.length;
     i++
   ) {
 
     const occupationId =
       occupationsToProcess[
-        i
+      i
       ];
 
     try {
@@ -433,38 +452,38 @@ async function run() {
           cache
         );
 
-    const current =
-      i + 1;
+      const current =
+        i + 1;
 
-      console.log('current=', current, 'processed=', processed, 'occupationId=', occupationId, 'group=', group);
+      console.log('[' + i + '] current=', current, 'processed=', processed, 'occupationId=', occupationId, 'group=', group);
 
-        fs.writeFileSync(
-          CACHE_FILE,
-          JSON.stringify(
-            cache,
-            null,
-            2
-          )
-        );
+      fs.writeFileSync(
+        CACHE_FILE,
+        JSON.stringify(
+          cache,
+          null,
+          2
+        )
+      );
 
-        saveState(
-          STATE_FILE,
-          {
-            processed,
+      saveState(
+        STATE_FILE,
+        {
+          processed,
 
-            lastOccupationId:
-              occupationId,
+          lastOccupationId:
+            occupationId,
 
-            updatedAt:
-              new Date()
-                .toISOString()
-          }
-        );
+          updatedAt:
+            new Date()
+              .toISOString()
+        }
+      );
 
-        console.log(
-          `${processed}/${occupationsToProcess.length}`
-        );
-      
+      console.log(
+        `${processed}/${occupationsToProcess.length}`
+      );
+
 
       console.log(
         occupationId,
@@ -535,7 +554,7 @@ async function run() {
 
       lastOccupationId:
         occupationsToProcess[
-          occupationsToProcess.length - 1
+        occupationsToProcess.length - 1
         ],
 
       updatedAt:
