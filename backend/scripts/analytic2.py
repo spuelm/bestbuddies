@@ -1,25 +1,95 @@
 import pandas as pd
 import numpy as np
 
-datadir="C:/Users/steph/OneDrive/Projekte/Bestbuddies/git/bestbuddies/backend/data";
-dfin=pd.read_json(datadir+"/02_person_candidates_sorted/02_person_candidates_sorted.jsonl", lines=True)
+datadir="C:/Users/steph/OneDrive/Projekte/Bestbuddies/git/bestbuddies/backend/data"
+person_file=datadir+"/04_linkscore/04c_persons_linkscore_pass2.jsonl"
+occupation_file=datadir+"/06_occupation/06b_occupation-group-cache.json"
+error_file=datadir+"/06_occupation/analytic_error.jsonl"
 
 
-dfout=pd.read_json(datadir+"/04_linkscore/_04a_persons_linkscore_pass1.jsonl", lines=True)
 
-df_not_in_out = (
-    dfin.merge(dfout[['pageid']], on='pageid', how='left', indicator=True)
-        .query("_merge == 'left_only'")
-        .drop(columns="_merge")
-)
-print(len(df_not_in_out))
-print(df_not_in_out)
+import json
+
+# Occupations laden
+with open(occupation_file, "r", encoding="utf-8") as f:
+    occupations = json.load(f)
+
+# Zulässige Occupation-IDs bestimmen
+valid_occupations = {
+    qid
+    for qid, data in occupations.items()
+    if data.get("group") not in {"person", "nicht gefunden"}
+}
+print (valid_occupations)
+
+count = 0
+max_linkscore =-1
+max_articlelen = -1
+no_occ =0
+
+with open(person_file, "r", encoding="utf-8") as f, \
+     open(error_file, "w", encoding="utf-8") as ferr:
+    for line in f:
+        person = json.loads(line)
+
+        occupation_ids = person.get("occupationIds", [])
+        if len (occupation_ids) == 0:
+           no_occ += 1 
+        if not any(qid in valid_occupations for qid in occupation_ids):
+            count += 1
+            max_linkscore = max(max_linkscore, person["linkScore"])
+            max_articlelen = max (max_articlelen, person["articleLength"])
+            ferr.write(json.dumps(person, ensure_ascii=False) + "\n")
+            print(
+                person["wikidataId"],
+                person["title"]
+            )
+# Datei laden
+with open(error_file, "r", encoding="utf-8") as f:
+    persons = [json.loads(line) for line in f]
+
+# Nach linkScore absteigend sortieren
+persons.sort(key=lambda p: p.get("linkScore", 0), reverse=True)
+
+# Zurückschreiben
+with open(error_file, "w", encoding="utf-8") as f:
+    for person in persons:
+        f.write(json.dumps(person, ensure_ascii=False) + "\n")
+
+print(f"{len(persons)} Datensätze sortiert.")
+
+import json
+
+# Occupations laden (ohne Filter)
+with open(occupation_file, "r", encoding="utf-8") as f:
+    occupations = json.load(f)
+
+persons = []
+
+# Error-Datei laden
+with open(error_file, "r", encoding="utf-8") as f:
+    for line in f:
+        person = json.loads(line)
+
+        occ_ids = person.get("occupationIds", [])
+
+        if occ_ids:
+            first_qid = occ_ids[0]
+
+            if first_qid in occupations:
+                person["occupationIds"][0] = occupations[first_qid]["label"]
+
+        persons.append(person)
+
+# Zurückschreiben
+with open(error_file, "w", encoding="utf-8") as f:
+    for person in persons:
+        f.write(json.dumps(person, ensure_ascii=False) + "\n")
+
+print(f"{len(persons)} Datensätze aktualisiert.")
+print(f"\nGefundene Personen: {count}")
+print(f"max articlelength {max_articlelen}")
+print(f"max linkscore {max_linkscore}")
+print (f"no_occ {no_occ}")
 
 
-df_not_in_out = (
-    dfout.merge(dfin[['pageid']], on='pageid', how='left', indicator=True)
-        .query("_merge == 'left_only'")
-        .drop(columns="_merge")
-)
-print(len(df_not_in_out))
-print(df_not_in_out)

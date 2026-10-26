@@ -36,12 +36,12 @@ const TARGET_GROUPS = [
   { name: "literat", group: "literatur" },
   { name: "writer", group: "literatur" },
   { name: "autor", group: "literatur" },
+  // Musik --------------------------------
   { name: "musik", group: "musik" },
   { name: "music", group: "musik" },
   { name: "singer", group: "musik" },
-  interpret
-  composer
-
+  { name: "composer", group: "musik" },
+  // Politik ---------------------------------
   { name: "politik", group: "politik" },
   { name: "politic", group: "politik" },
   { name: "radikaler", group: "politik" },
@@ -58,51 +58,63 @@ const TARGET_GROUPS = [
   { name: "bürgermeister", group: "politik" },
   { name: "bürgermeister", group: "politik" },
   { name: "bürgermeister", group: "politik" },
-
-
-
+  { name: "herrscher", group: "politik" },
+  { name: "aristokrat", group: "politik" },
+  { name: "häuptling", group: "politik" },
+  { name: "samurai", group: "politik" },
+  { name: "regierend", group: "politik" },
+  { name: "adelstitel", group: "politik" },
+  // Philosophie ---------------------------------
   { name: "philosoph", group: "philosophie" },
   { name: "techni", group: "technik" },
   { name: "informatiker", group: "technik" },
-
-  { name: "kunst", group: "kunst" },
-  { name: "künstler", group: "kunst" },
-  { name: "theater", group: "kunst" },
-  { name: "tanz", group: "kunst" },
-  { name: "fotograf", group: "kunst" },
-  { name: "photogra", group: "kunst" },
-  { name: "architekt", group: "kunst" },
-
-
-
-
-
-
+  // Kunst ---------------------------------------
+  { name: "kunst", group: "künstler" },
+  { name: "künstler", group: "künstler" },
+  { name: "theater", group: "künstler" },
+  { name: "tanz", group: "künstler" },
+  { name: "fotograf", group: "künstler" },
+  { name: "photogra", group: "künstler" },
+  { name: "architekt", group: "künstler" },
+  { name: "interpret", group: "künstler" },
+  // Religion -------------------------------------
   { name: "religi", group: "religion" },
   { name: "rabbi", group: "religion" },
   { name: "bishop", group: "religion" },
   { name: "islamic", group: "religion" },
   { name: "mitropolit", group: "religion" },
-
-
-
   { name: "theolog", group: "religion" },
+  // Militär ------------------------------------------
   { name: "milit", group: "militär" },
   { name: "soldat", group: "militär" },
   { name: "marschall", group: "militär" },
   { name: "offizier", group: "militär" },
-
-
+  { name: "crusader", group: "militär" },
+  { name: "ritter", group: "militär" },
+  // Sport -------------------------------------
   { name: "sport", group: "sport" },
+  { name: "snooker", group: "sport" },
+  { name: "fußball", group: "sport" },
+  { name: "karambolage", group: "sport" },
+  { name: "billard", group: "sport" },
+  { name: "dart", group: "sport" },
+  { name: "pokerspieler", group: "sport" },
+  // Medizin -------------------------------------
   { name: "medizin", group: "medizin" },
   { name: "medic", group: "medizin" },
   { name: "arzt", group: "medizin" },
   { name: "physicist", group: "medizin" },
+  // Wiurtschaft -----------------------------------
   { name: "wirtschaft", group: "wirtschaft" },
   { name: "management", group: "wirtschaft" },
-
-
   { name: "economy", group: "wirtschaft" },
+  { name: "unternehmer", group: "wirtschaft" },
+
+  { name: "bankier", group: "wirtschaft" },
+  { name: "banker", group: "wirtschaft" },
+  { name: "kaufmann", group: "wirtschaft" },
+
+  // Wissenschaft ------------------------------------
   { name: "wissenschaft", group: "wissenschaft" },
   { name: "ingenieur", group: "wissenschaft" },
   { name: "museum", group: "wissenschaft" },
@@ -112,10 +124,13 @@ const TARGET_GROUPS = [
   { name: "physics", group: "wissenschaft" },
   { name: "research", group: "wissenschaft" },
   { name: "scienti", group: "wissenschaft" },
-
-
   { name: "science", group: "wissenschaft" },
+  { name: "hochschullehrer", group: "wissenschaft" },
+
+
   { name: "person", group: "person" },
+  { name: "fahrzeugführer", group: "person" },
+
   { name: "art", group: "kunst" }
 
 
