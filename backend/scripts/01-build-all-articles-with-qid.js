@@ -17,9 +17,9 @@ const {
   require("../lib/sleep");
 
 const {
-  fetchBatch
+  wpediaFetchBatch
 } =
-  require("../lib/wikipedia-api");
+  require("../lib/wiki-api");
 
 const {
   appendRecords
@@ -76,7 +76,7 @@ async function run() {
     try {
 
       const data =
-        await fetchBatch(
+        await wpediaFetchBatch(
           gapcontinue
         );
 

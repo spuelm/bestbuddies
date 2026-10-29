@@ -6,7 +6,7 @@ let lastTitle = "";
 let lastArticleLength = 0;
 
 const {
-  loadEntities,
+  wdataLoadEntities,
   P_POSITION_HELT,
   P_BITRH_YEAR,
   P_DEATH_YEAR,
@@ -16,7 +16,7 @@ const {
   P_FANILY_NAMES,
   P_BIRTH_PLACE,
   P_CONTINENTS
-} = require("../lib/wikidata-api");
+} = require("../lib/wiki-api");
 
 
 const {
@@ -83,7 +83,7 @@ async function processBatch(
     try {
 
       entities =
-        await loadEntities(
+        await wdataLoadEntities(
           qids
         );
 

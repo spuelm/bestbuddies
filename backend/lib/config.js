@@ -15,7 +15,7 @@ const PERSON_WITH_CENTURIES = "07";
 const OCCUPATION = "06";
 
 module.exports = {
-  BOT_HEADER: "ZeitzeugenBot/1.0 (https://de.wikipedia.org/wiki/Benutzer:ZeitzeugenBot; s.puelm@gmx.de)",
+
 
   DATA_DIR,
 
@@ -82,30 +82,18 @@ module.exports = {
 
 
 
-  PERSONS_LINKSCORE_PASS1_FILE_SORTED:
-    path.join(
-      __dirname,
-      "../data//" + PERSON_WITH_LINKS + "_linkscore/" + PERSON_WITH_LINKS + "b_persons_linkscore_pass1_sorted.jsonl"
-    ),
 
 
   PERSONS_LINKSCORE_PASS2_FILE:
     path.join(
       __dirname,
-      "../data//" + PERSON_WITH_LINKS + "_linkscore/" + PERSON_WITH_LINKS + "c_persons_linkscore_pass2.jsonl"
+      "../data//" + PERSON_WITH_LINKS + "_linkscore/" + PERSON_WITH_LINKS + "b_persons_linkscore_pass2.jsonl"
     ),
 
   PERSONS_LINKSCORE_PASS2_STATE_FILE:
     path.join(
       __dirname,
-      "../data//" + PERSON_WITH_LINKS + "_linkscore//" + PERSON_WITH_LINKS + "c_linkscore_pass2_state.json"
-    ),
-
-
-  PERSONS_LINKSCORE_PASS2_FILE_SORTED:
-    path.join(
-      __dirname,
-      "../data//" + PERSON_WITH_LINKS + "_linkscore/" + PERSON_WITH_LINKS + "d_persons_linkscore_pass1_sorted.jsonl"
+      "../data//" + PERSON_WITH_LINKS + "_linkscore//" + PERSON_WITH_LINKS + "b_linkscore_pass2_state.json"
     ),
 
 
@@ -115,17 +103,7 @@ module.exports = {
 
 
 
-  PERSONS_DATAENRICHMENT_FILE:
-    path.join(
-      __dirname,
-      "../data//" + PERSON_DATA_ENRICHMENT + "_dataenrichment/" + PERSON_DATA_ENRICHMENT + "a_dataenrichment.jsonl"
-    ),
 
-  PERSONS_DATAENRICHMENT_STATE_FILE:
-    path.join(
-      __dirname,
-      "../data//" + PERSON_DATA_ENRICHMENT + "_dataenrichment/" + PERSON_DATA_ENRICHMENT + "a_dataenrichment_state.json"
-    ),
 
   PERSONS_DATAENRICHMENT_CONTINENT_FILE:
     path.join(

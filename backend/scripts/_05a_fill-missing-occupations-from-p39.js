@@ -10,8 +10,8 @@ const path = require("path");
 const readline = require("readline");
 
 const {
-    loadEntities
-} = require("../lib/wikidata-api");
+    wdataLoadEntities
+} = require("../lib/wiki-api");
 
 const {
     sleep
@@ -48,7 +48,7 @@ function getEntityIds(
         .filter(Boolean);
 }
 
-async function loadEntitiesWithRetry(
+async function wdataLoadEntitiesWithRetry(
     qids
 ) {
 
@@ -57,7 +57,7 @@ async function loadEntitiesWithRetry(
         try {
 
             const entities =
-                await loadEntities(
+                await wdataLoadEntities(
                     qids
                 );
 
@@ -211,7 +211,7 @@ async function run() {
                 );
 
             const entities =
-                await loadEntitiesWithRetry(
+                await wdataLoadEntitiesWithRetry(
                     qids
                 );
 

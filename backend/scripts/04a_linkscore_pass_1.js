@@ -9,13 +9,8 @@ const {
   PERSONS_LINKSCORE_PASS1_FILE,
   PERSONS_LINKSCORE_PASS1_STATE_FILE
 } = require("../lib/config");
-
-
-
 const INPUT_FILE = HUMAN_FILE_SORTED;
-
 const OUTPUT_FILE = PERSONS_LINKSCORE_PASS1_FILE;
-
 const STATE_FILE = PERSONS_LINKSCORE_PASS1_STATE_FILE;
 
 
@@ -26,6 +21,7 @@ const {
 } = require(
   "../lib/mediawiki-client"
 );
+const BOT_HEADER = require("../lib/wiki-api");
 
 function sleep(ms) {
 
@@ -119,8 +115,7 @@ async function queryBatch(
             },
 
             headers: {
-              "User-Agent":
-                "BestBuddiesBot/0.1"
+              "User-Agent": BOT_HEADER
             },
 
             timeout: 30000

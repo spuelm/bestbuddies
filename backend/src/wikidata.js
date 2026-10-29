@@ -1,4 +1,5 @@
 const axios = require("axios");
+const BOT_HEADER = require("../lib/wiki-api");
 
 async function findPerson(searchText) {
   const response = await axios.get(
@@ -13,7 +14,7 @@ async function findPerson(searchText) {
         limit: 1
       },
       headers: {
-        "User-Agent": "BestBuddies/0.1"
+        "User-Agent": BOT_HEADER
       }
     }
   );
@@ -36,7 +37,7 @@ async function getEntityLabel(qid) {
     `https://www.wikidata.org/wiki/Special:EntityData/${qid}.json`,
     {
       headers: {
-        "User-Agent": "BestBuddies/0.1 (development)"
+        "User-Agent": BOT_HEADER
       }
     }
   );
@@ -65,7 +66,7 @@ async function getPersonDetails(qid) {
     `https://www.wikidata.org/wiki/Special:EntityData/${qid}.json`,
     {
       headers: {
-        "User-Agent": "BestBuddies/0.1"
+        "User-Agent": BOT_HEADER
       }
     }
   );
@@ -78,19 +79,21 @@ async function getPersonDetails(qid) {
 
   const death =
     claims.P570?.[0]?.mainsnak?.datavalue?.value?.time || null;
-const occupations =
-  claims.P106?.map(
-    item => item.mainsnak.datavalue.value.id
-  ) || [];
+  const occupations =
+    claims.P106?.map(
+      item => item.mainsnak.datavalue.value.id
+    ) || [];
 
-    return {
-        geboren: getYear(birth),
-        gestorben: getYear(death),
-        berufe: occupations
-    };
+  return {
+    geboren: getYear(birth),
+    gestorben: getYear(death),
+    berufe: occupations
+  };
 }
 
 module.exports = {
+
+  BOT_HEADER: "ZeitzeugenBot/1.0 (https://de.wikipedia.org/wiki/Benutzer:ZeitzeugenBot; s.puelm@gmx.de)",
   findPerson,
   getPersonDetails,
   getEntityLabel

@@ -3,8 +3,8 @@ const path = require("path");
 const readline = require("readline");
 
 const {
-    loadEntities
-} = require("../lib/wikidata-api");
+    wdataLoadEntities
+} = require("../lib/wiki-api");
 
 const {
     sleep
@@ -16,13 +16,13 @@ const {
 } = require("../lib/state-manager");
 
 const {
-    PERSONS_DATAENRICHMENT_FILE,
+    PERSONS_LINKSCORE_PASS2_FILE,
     PERSONS_DATAENRICHMENT_CONTINENT_FILE,
     PERSONS_DATAENRICHMENT_CONTINENT_STATE_FILE,
     CONTINENT_CACHE_FILE
 } = require("../lib/config");
 
-const INPUT_FILE = PERSONS_DATAENRICHMENT_FILE;
+const INPUT_FILE = PERSONS_LINKSCORE_PASS2_FILE;
 const OUTPUT_FILE = PERSONS_DATAENRICHMENT_CONTINENT_FILE;
 
 
@@ -33,7 +33,7 @@ const STATE_FILE = PERSONS_DATAENRICHMENT_CONTINENT_STATE_FILE;
 
 const BATCH_SIZE = 50;
 
-async function loadEntitiesWithRetry(
+async function wdataLoadEntitiesWithRetry(
     ids
 ) {
 
@@ -42,7 +42,7 @@ async function loadEntitiesWithRetry(
         try {
 
             return (
-                await loadEntities(
+                await wdataLoadEntities(
                     ids
                 )
             ) || {};
@@ -222,13 +222,14 @@ async function run() {
                 }
             }
         }
-
+        nationalityIds.clear()
+        nationalityIds.add(item.birthPLace)
         if (
             nationalityIds.size > 0
         ) {
 
             const nationalityEntities =
-                await loadEntitiesWithRetry(
+                await wdataLoadEntitiesWithRetry(
                     [...nationalityIds]
                 );
 
@@ -263,7 +264,7 @@ async function run() {
                 ) {
 
                     const continentEntities =
-                        await loadEntitiesWithRetry(
+                        await wdataLoadEntitiesWithRetry(
                             continentIds
                         );
 

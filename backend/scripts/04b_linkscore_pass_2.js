@@ -4,23 +4,26 @@ const path = require("path");
 const axios = require("axios");
 
 const {
-  PERSONS_LINKSCORE_PASS1_FILE_SORTED,
+  PERSONS_LINKSCORE_PASS1_FILE,
   PERSONS_LINKSCORE_PASS2_FILE,
   PERSONS_LINKSCORE_PASS2_STATE_FILE
-
 } = require("../lib/config");
+const INPUT_FILE = PERSONS_LINKSCORE_PASS1_FILE;
+const OUTPUT_FILE = PERSONS_LINKSCORE_PASS2_FILE;
+const STATE_FILE = PERSONS_LINKSCORE_PASS2_STATE_FILE;
+
+
 
 const {
-  getClient
+  getClient,
+  BOT_HEADER
 } = require(
-  "../lib/mediawiki-client"
+  "../lib/mediawiki-client",
+
 );
 
-const INPUT_FILE =PERSONS_LINKSCORE_PASS1_FILE_SORTED;
 
-const OUTPUT_FILE =PERSONS_LINKSCORE_PASS2_FILE;
 
-const STATE_FILE =PERSONS_LINKSCORE_PASS2_STATE_FILE;
 
 const MAX_PERSONS = 5000000;
 
@@ -105,18 +108,17 @@ async function getLinkScore(title) {
       }
 
       const client =
-      await getClient();
-  
+        await getClient();
+
 
       const response =
         await client.get(
-    //  await axios.get(
+          //  await axios.get(
           "https://de.wikipedia.org/w/api.php",
           {
             params,
             headers: {
-              "User-Agent":
-                "BestBuddiesBot/0.1"
+              "User-Agent": BOT_HEADER
             },
             timeout: 30000
           }
@@ -170,7 +172,7 @@ async function getLinkScore(title) {
         const retryAfter =
           parseInt(
             err.response.headers[
-              "retry-after"
+            "retry-after"
             ]
           ) || 60;
 
@@ -261,22 +263,22 @@ async function run() {
       );
 
     try {
-    let newScore=0;
-    if (person.linkScore>499){
-   
-       newScore =
-        await getLinkScore(
-          person.title
-        );
-       person.linkScore = newScore
-        console.log(
-            `[${processed.toLocaleString("de-DE")}] ` +
-            `${person.title} ` +
-            `articlen: ${person.articleLength} ` +
-            `→ Linkscore=${person.linkScore}`
+      let newScore = 0;
+      if (person.linkScore > 499) {
+
+        newScore =
+          await getLinkScore(
+            person.title
           );
-    }
-      
+        person.linkScore = newScore
+        console.log(
+          `[${processed.toLocaleString("de-DE")}] ` +
+          `${person.title} ` +
+          `articlen: ${person.articleLength} ` +
+          `→ Linkscore=${person.linkScore}`
+        );
+      }
+
       output.write(
         JSON.stringify(
           person
@@ -304,14 +306,14 @@ async function run() {
             new Date()
               .toISOString()
         });
-        if (processed % 500 === 0){
+        if (processed % 500 === 0) {
           console.log(
             `[${processed.toLocaleString("de-DE")}] ` +
             `${person.title} ` +
             `articlen: ${person.articleLength} ` +
             `→ Linkscore=${person.linkScore}`
           );
-      }
+        }
       }
 
 
@@ -339,7 +341,7 @@ async function run() {
           new Date()
             .toISOString()
       });
-    
+
     }
   }
 
@@ -352,7 +354,7 @@ async function run() {
       new Date()
         .toISOString()
   });
-  
+
   console.log(
     "Linkscore-Ermittlung beendet."
   );

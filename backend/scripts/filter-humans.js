@@ -2,8 +2,8 @@ const fs = require("fs");
 const readline = require("readline");
 
 const {
-  loadEntities
-} = require("../lib/wikidata-api");
+  wdataLoadEntities
+} = require("../lib/wiki-api");
 
 const {
   sleep
@@ -45,7 +45,7 @@ async function processBatch(
     try {
 
       entities =
-        await loadEntities(
+        await wdataLoadEntities(
           qids
         );
 
@@ -70,7 +70,7 @@ async function processBatch(
         const retryAfter =
           parseInt(
             err.response.headers[
-              "retry-after"
+            "retry-after"
             ]
           ) || 60;
 
@@ -95,7 +95,7 @@ async function processBatch(
 
     const entity =
       entities?.[
-        item.wikidataId
+      item.wikidataId
       ];
 
     if (!entity) {
@@ -317,7 +317,7 @@ async function run() {
         const retryAfter =
           parseInt(
             err.response.headers[
-              "retry-after"
+            "retry-after"
             ]
           ) || 60;
 

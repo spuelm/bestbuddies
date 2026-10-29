@@ -8,6 +8,7 @@ const {
   PERSONS_WITH_LINKS_FILE,
   PERSONS_WITH_LINKS_STATE_FILE
 } = require("../lib/config");
+const BOT_HEADER = require("../lib/wiki-api");
 const INPUT_FILE = HUMAN_FILE_SORTED;
 
 const OUTPUT_FILE = PERSONS_WITH_LINKS_FILE;
@@ -100,8 +101,7 @@ async function getLinkScore(title) {
           {
             params,
             headers: {
-              "User-Agent":
-                "BestBuddiesBot/0.1"
+              "User-Agent": BOT_HEADER
             },
             timeout: 30000
           }

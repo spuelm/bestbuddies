@@ -17,9 +17,9 @@ const STATE_FILE = OCCUPATION_GROUP_STATE_FILE;
 const ERROR_FILE = OCCUPATION_GROUP_ERRORS_FILE;
 
 const {
-  loadEntities
+  wdataLoadEntities
 } =
-  require("../lib/wikidata-api");
+  require("../lib/wiki-api");
 
 const {
   sleep
@@ -169,7 +169,7 @@ async function loadEntityWithRetry(
     try {
 
       const entities =
-        await loadEntities(
+        await wdataLoadEntities(
           [qid]
         );
 

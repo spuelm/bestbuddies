@@ -4,6 +4,7 @@ require("dotenv")
 // MEDIAWIKI_PASSWORD
 // MEDIAWIKI_USERNAME
 
+const BOT_HEADER = require("../lib/wiki-api");
 
 const axios =
   require("axios");
@@ -11,16 +12,16 @@ const axios =
 const {
   wrapper
 } =
-require(
-  "axios-cookiejar-support"
-);
+  require(
+    "axios-cookiejar-support"
+  );
 
 const {
   CookieJar
 } =
-require(
-  "tough-cookie"
-);
+  require(
+    "tough-cookie"
+  );
 
 const WIKI_API =
   "https://de.wikipedia.org/w/api.php";
@@ -29,24 +30,23 @@ let client =
   null;
 
 async function createClient() {
-  console.log ( process.env
-           .MEDIAWIKI_USERNAME)
+  console.log(process.env
+    .MEDIAWIKI_USERNAME)
 
-                    
-    if (
-    ! process.env
-           .MEDIAWIKI_USERNAME ||
-    ! process.env
-           .MEDIAWIKI_PASSWORD
-    )
-    {
+
+  if (
+    !process.env
+      .MEDIAWIKI_USERNAME ||
+    !process.env
+      .MEDIAWIKI_PASSWORD
+  ) {
     throw new Error(
-        "MEDIAWIKI_USERNAME oder MEDIAWIKI_PASSWORD fehlt"
+      "MEDIAWIKI_USERNAME oder MEDIAWIKI_PASSWORD fehlt"
     );
-    }
+  }
 
 
-    
+
   const jar =
     new CookieJar();
 
@@ -55,8 +55,7 @@ async function createClient() {
     wrapper(
       axios.create({
         headers: {
-        "User-Agent":
-            "ZeitzeugenBot/1.0 (private research project; mail@example.de)"
+          "User-Agent": BOT_HEADER
         },
 
         jar,
@@ -84,53 +83,53 @@ async function createClient() {
       .query
       .tokens
       .logintoken;
-try{
-  const loginResponse =    
-  await client.post(
-    WIKI_API,
-    new URLSearchParams({
+  try {
+    const loginResponse =
+      await client.post(
+        WIKI_API,
+        new URLSearchParams({
 
-      action: "login",
+          action: "login",
 
-      lgname:
-         process.env
-           .MEDIAWIKI_USERNAME,
+          lgname:
+            process.env
+              .MEDIAWIKI_USERNAME,
 
-      lgpassword:
-        process.env
-          .MEDIAWIKI_PASSWORD,
+          lgpassword:
+            process.env
+              .MEDIAWIKI_PASSWORD,
 
-      lgtoken:
-        loginToken,
+          lgtoken:
+            loginToken,
 
-      format: "json"
-    })
-  );
+          format: "json"
+        })
+      );
 
 
-console.log(
-  JSON.stringify(
-    loginResponse.data,
-    null,
-    2
-  )
-);
-}
-catch (err){
+    console.log(
+      JSON.stringify(
+        loginResponse.data,
+        null,
+        2
+      )
+    );
+  }
+  catch (err) {
     if (err.response) {
 
-    console.log(
+      console.log(
         "Status:",
         err.response.status
-    );
+      );
 
-    console.log(
+      console.log(
         err.response.data
-    );
-    throw err
+      );
+      throw err
     }
 
-}
+  }
 
 
 
@@ -144,18 +143,19 @@ catch (err){
 async function getClient() {
 
   if (!client) {
-   try{
-    await createClient();
-   } catch (err) {
+    try {
+      await createClient();
+    } catch (err) {
 
-    console.log(err)
-    throw err
-   }
+      console.log(err)
+      throw err
+    }
   }
 
   return client;
 }
 
 module.exports = {
-  getClient
+  getClient,
+  BOT_HEADER
 };
