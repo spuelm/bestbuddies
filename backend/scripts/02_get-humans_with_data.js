@@ -2,12 +2,22 @@
 const MAX_HUMANS = 5000000;
 const fs = require("fs");
 const readline = require("readline");
-let lastTitle="";
-let lastArticleLength=0;
+let lastTitle = "";
+let lastArticleLength = 0;
 
 const {
-  loadEntities
+  loadEntities,
+  P_POSITION_HELT,
+  P_BITRH_YEAR,
+  P_DEATH_YEAR,
+  P_NATIONALITIES,
+  P_OCCUPATIONS,
+  P_GIVEN_NAMES,
+  P_FANILY_NAMES,
+  P_BIRTH_PLACE,
+  P_CONTINENTS
 } = require("../lib/wikidata-api");
+
 
 const {
   sleep
@@ -18,18 +28,42 @@ const {
   saveState
 } = require("../lib/state-manager");
 
+
+
+
+
 const {
   appendRecords
 } = require("../lib/jsonl-writer");
 
 const {
   ALL_ARTICLES_FILE_SORTED,
-  HUMAN_OUTPUT_FILE_SORTED,
+  HUMAN_FILE_SORTED,
   HUMAN_STATE_FILE_SORTED,
-  P31_STATS_FILE_SORTED 
+  P31_STATS_FILE_SORTED
 } = require("../lib/config");
 
+const INPUT_FILE = ALL_ARTICLES_FILE_SORTED;
+const OUTPUT_FILE = HUMAN_FILE_SORTED;
+const STATE_FILE = HUMAN_STATE_FILE_SORTED;
+const STATISTICS_FILE = P31_STATS_FILE_SORTED;
+
 const BATCH_SIZE = 50;
+
+
+function getSingleEntityId(
+  claims,
+  property
+) {
+
+  return claims?.[property]?.[0]
+    ?.mainsnak
+    ?.datavalue
+    ?.value
+    ?.id || null;
+}
+
+
 
 async function processBatch(
   batch,
@@ -74,7 +108,7 @@ async function processBatch(
         const retryAfter =
           parseInt(
             err.response.headers[
-              "retry-after"
+            "retry-after"
             ]
           ) || 60;
 
@@ -99,7 +133,7 @@ async function processBatch(
 
     const entity =
       entities?.[
-        item.wikidataId
+      item.wikidataId
       ];
 
     if (!entity) {
@@ -122,39 +156,50 @@ async function processBatch(
     const birthYear =
       getYear(
         claims,
-        "P569"
+        P_BITRH_YEAR
       );
 
     const deathYear =
       getYear(
         claims,
-        "P570"
+        P_DEATH_YEAR
       );
 
     const nationalityIds =
       getEntityIds(
         claims,
-        "P27"
+        P_NATIONALITIES
       );
 
     const occupationIds =
       getEntityIds(
         claims,
-        "P106"
+        P_OCCUPATIONS
+      );
+
+    const positionsHeld =
+      getEntityIds(
+        claims,
+        P_POSITION_HELT
       );
 
     const givenNameIds =
       getEntityIds(
         claims,
-        "P735"
+        P_GIVEN_NAMES
       );
 
     const familyNameIds =
       getEntityIds(
         claims,
-        "P734"
+        P_FANILY_NAMES
       );
 
+    const birthPlaceId =
+      getSingleEntityId(
+        claims,
+        P_BIRTH_PLACE
+      );
 
     let isHuman =
       false;
@@ -185,40 +230,45 @@ async function processBatch(
         isHuman = true;
       }
     }
-   
+
     lastArticleLength = item.articleLength;
     if (isHuman) {
-       lastTitle = item.title;
+      lastTitle = item.title;
 
-    humans.push({
+      humans.push({
 
-      pageid:
-        item.pageid,
+        pageid:
+          item.pageid,
 
-      ns:
-        item.ns,
+        ns:
+          item.ns,
 
-      title:
-        item.title,
+        title:
+          item.title,
 
-      wikidataId:
-        item.wikidataId,
+        wikidataId:
+          item.wikidataId,
 
-      articleLength:
-        item.articleLength,
+        articleLength:
+          item.articleLength,
 
-      birthYear,
+        birthYear,
 
-      deathYear,
+        deathYear,
 
-      nationalityIds,
+        nationalityIds,
 
-      occupationIds,
+        occupationIds,
+        positionsHeld,
 
-      givenNameIds,
+        givenNameIds,
 
-      familyNameIds
-    });
+        familyNameIds,
+
+        birthPlaceId
+
+
+      });
     }
   }
 
@@ -227,8 +277,7 @@ async function processBatch(
 function getYear(
   claims,
   property
-)
-{
+) {
   const time =
     claims?.[property]?.[0]
       ?.mainsnak
@@ -319,7 +368,7 @@ async function run() {
 
   const stream =
     fs.createReadStream(
-      ALL_ARTICLES_FILE_SORTED
+      INPUT_FILE
     );
 
   const rl =
@@ -402,13 +451,13 @@ async function run() {
       ) {
 
         appendRecords(
-          HUMAN_OUTPUT_FILE_SORTED,
+          OUTPUT_FILE,
           results
         );
       }
 
       fs.writeFileSync(
-        P31_STATS_FILE_SORTED,
+        STATISTICS_FILE,
         JSON.stringify(
           stats,
           null,
@@ -417,7 +466,7 @@ async function run() {
       );
 
       saveState(
-        HUMAN_STATE_FILE_SORTED,
+        STATE_FILE,
         {
           lineNumber:
             currentLine,
@@ -449,9 +498,9 @@ async function run() {
 
       batch = [];
 
-      await sleep(
-        1000
-      );
+      //  await sleep(
+      //     1000
+      //   );
 
     } catch (err) {
 
@@ -462,7 +511,7 @@ async function run() {
         const retryAfter =
           parseInt(
             err.response.headers[
-              "retry-after"
+            "retry-after"
             ]
           ) || 60;
 

@@ -4,16 +4,15 @@ const path = require("path");
 const axios = require("axios");
 
 const {
-  HUMAN_OUTPUT_FILE_SORTED,
+  HUMAN_FILE_SORTED,
   PERSONS_WITH_LINKS_FILE,
   PERSONS_WITH_LINKS_STATE_FILE
-
 } = require("../lib/config");
-const INPUT_FILE =HUMAN_OUTPUT_FILE_SORTED;
+const INPUT_FILE = HUMAN_FILE_SORTED;
 
-const OUTPUT_FILE =PERSONS_WITH_LINKS_FILE;
+const OUTPUT_FILE = PERSONS_WITH_LINKS_FILE;
 
-const STATE_FILE =PERSONS_WITH_LINKS_STATE_FILE;
+const STATE_FILE = PERSONS_WITH_LINKS_STATE_FILE;
 
 const MAX_PERSONS = 5000000;
 
@@ -156,7 +155,7 @@ async function getLinkScore(title) {
         const retryAfter =
           parseInt(
             err.response.headers[
-              "retry-after"
+            "retry-after"
             ]
           ) || 60;
 
@@ -254,10 +253,10 @@ async function run() {
         );
 
       const enriched =
-        {
-          ...person,
-          linkScore
-        };
+      {
+        ...person,
+        linkScore
+      };
 
       output.write(
         JSON.stringify(
@@ -322,7 +321,7 @@ async function run() {
           new Date()
             .toISOString()
       });
-    
+
     }
   }
 

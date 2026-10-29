@@ -1,3 +1,5 @@
+// @TODO linkshere pass1 mit auslesen
+
 const fs =
   require("fs");
 
@@ -7,33 +9,33 @@ const {
   ALL_ARTICLES_STATE_FILE,
   REQUEST_DELAY_MS
 } =
-require("../lib/config");ALL_ARTICLES_FILE
+  require("../lib/config");
 
 const {
   sleep
 } =
-require("../lib/sleep");
+  require("../lib/sleep");
 
 const {
   fetchBatch
 } =
-require("../lib/wikipedia-api");
+  require("../lib/wikipedia-api");
 
 const {
   appendRecords
 } =
-require("../lib/jsonl-writer");
+  require("../lib/jsonl-writer");
 
 const {
   loadState2,
   saveState2
 } =
-require("../lib/state-manager");
+  require("../lib/state-manager");
 
 const {
   logProgress
 } =
-require("../lib/progress");
+  require("../lib/progress");
 
 async function run() {
 
@@ -93,7 +95,7 @@ async function run() {
         const wikidataId =
           page.pageprops
             ?.wikibase_item
-            || null;
+          || null;
 
         if (
           wikidataId
@@ -167,7 +169,7 @@ async function run() {
         const retryAfter =
           parseInt(
             err.response.headers[
-              "retry-after"
+            "retry-after"
             ]
           ) || 60;
 

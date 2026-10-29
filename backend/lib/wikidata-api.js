@@ -1,3 +1,9 @@
+
+const {
+  BOT_HEADER
+} = require("../lib/config");
+
+
 const axios =
   require("axios");
 
@@ -29,7 +35,7 @@ async function loadEntities(qids) {
           format: "json"
         },
         headers: {
-          "Api-User-Agent": "ZeitzeugenBot/1.0 (https://de.wikipedia.org/wiki/Benutzer:ZeitzeugenBot; s.puelm@gmx.de)"
+          "Api-User-Agent": BOT_HEADER
         }
       }
     );
@@ -46,5 +52,15 @@ async function loadEntities(qids) {
 }
 
 module.exports = {
-  loadEntities
+  loadEntities,
+  P_POSITION_HELT: "P39",
+  P_BITRH_YEAR: "P569",
+  P_DEATH_YEAR: "P570",
+  P_NATIONALITIES: "P27",
+  P_OCCUPATIONS: "P106",
+  P_GIVEN_NAMES: "P735",
+  P_FANILY_NAMES: "P734",
+  P_BIRTH_PLACE: "P19",
+  P_CONTINENTS: "P30"
+
 };

@@ -5,13 +5,13 @@ const path = require("path");
 
 
 const {
-  PERSONS_LINKSCORE_PASS2_FILE,
+  PERSONS_DATAENRICHMENT_CONTINENT_FILE,
   PERSON_CANDIDATES_WITH_CENTURIES_FILE,
   CENTURY_INDEX_FILE
 } = require("../lib/config");
 
 
-const INPUT_FILE =  PERSONS_LINKSCORE_PASS2_FILE;
+const INPUT_FILE = PERSONS_DATAENRICHMENT_CONTINENT_FILE;
 
 const OUTPUT_FILE = PERSON_CANDIDATES_WITH_CENTURIES_FILE;
 
@@ -112,7 +112,7 @@ function getCenturies(
       let c =
         startCentury;
       c <=
-        endCentury;
+      endCentury;
       c++
     ) {
 
@@ -125,7 +125,7 @@ function getCenturies(
       let c =
         startCentury;
       c >=
-        endCentury;
+      endCentury;
       c--
     ) {
 
@@ -179,10 +179,10 @@ async function run() {
       );
 
     const enriched =
-      {
-        ...person,
-        centuries
-      };
+    {
+      ...person,
+      centuries
+    };
 
     writer.write(
       JSON.stringify(
@@ -197,7 +197,7 @@ async function run() {
 
       if (
         !centuryIndex[
-          century
+        century
         ]
       ) {
 

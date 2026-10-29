@@ -64,10 +64,17 @@ const TARGET_GROUPS = [
   { name: "samurai", group: "politik" },
   { name: "regierend", group: "politik" },
   { name: "adelstitel", group: "politik" },
+  { name: "prinzgemahl", group: "politik" },
+  { name: "landeshauptmann", group: "politik" },
+
+
   // Philosophie ---------------------------------
   { name: "philosoph", group: "philosophie" },
+  // Technik ------------------------------------------
   { name: "techni", group: "technik" },
   { name: "informatiker", group: "technik" },
+  { name: "baumeister", group: "technik" },
+  { name: "orgelbauer", group: "technik" },
   // Kunst ---------------------------------------
   { name: "kunst", group: "künstler" },
   { name: "künstler", group: "künstler" },
@@ -77,6 +84,11 @@ const TARGET_GROUPS = [
   { name: "photogra", group: "künstler" },
   { name: "architekt", group: "künstler" },
   { name: "interpret", group: "künstler" },
+  { name: "holzschnitzer", group: "künstler" },
+  { name: "töpfer", group: "künstler" },
+  { name: "kupferstecher", group: "künstler" },
+
+
   // Religion -------------------------------------
   { name: "religi", group: "religion" },
   { name: "rabbi", group: "religion" },
@@ -91,6 +103,7 @@ const TARGET_GROUPS = [
   { name: "offizier", group: "militär" },
   { name: "crusader", group: "militär" },
   { name: "ritter", group: "militär" },
+  { name: "söldner", group: "militär" },
   // Sport -------------------------------------
   { name: "sport", group: "sport" },
   { name: "snooker", group: "sport" },
@@ -113,6 +126,8 @@ const TARGET_GROUPS = [
   { name: "bankier", group: "wirtschaft" },
   { name: "banker", group: "wirtschaft" },
   { name: "kaufmann", group: "wirtschaft" },
+  { name: "geschäftsmann", group: "wirtschaft" },
+  { name: "landwirt", group: "wirtschaft" },
 
   // Wissenschaft ------------------------------------
   { name: "wissenschaft", group: "wissenschaft" },
@@ -126,6 +141,8 @@ const TARGET_GROUPS = [
   { name: "scienti", group: "wissenschaft" },
   { name: "science", group: "wissenschaft" },
   { name: "hochschullehrer", group: "wissenschaft" },
+  { name: "gelehrter", group: "wissenschaft" },
+
 
 
   { name: "person", group: "person" },

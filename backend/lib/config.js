@@ -15,6 +15,7 @@ const PERSON_WITH_CENTURIES = "07";
 const OCCUPATION = "06";
 
 module.exports = {
+  BOT_HEADER: "ZeitzeugenBot/1.0 (https://de.wikipedia.org/wiki/Benutzer:ZeitzeugenBot; s.puelm@gmx.de)",
 
   DATA_DIR,
 
@@ -28,17 +29,17 @@ module.exports = {
   ALL_ARTICLES_STATE_FILE:
     path.join(
       DATA_DIR,
-      "../data//" + ALL_ARTICLES + "_all-articles-with-quid/" + ALL_ARTICLES + "_all_articles_with_qid_state.json"
+      "../data//" + ALL_ARTICLES + "_all-articles-with-qid/" + ALL_ARTICLES + "_all_articles_with_qid_state.json"
     ),
   //phase 1b: Create all articles with QID sorted
   ALL_ARTICLES_FILE_SORTED:
     path.join(
       DATA_DIR,
-      "../data//" + ALL_ARTICLES + "b_all_articles_with_quid_sorted/" + ALL_ARTICLES + "b_all_articles_with_qid_sorted.jsonl"
+      "../data//" + ALL_ARTICLES + "b_all_articles_with_qid_sorted/" + ALL_ARTICLES + "b_all_articles_with_qid_sorted.jsonl"
     ),
 
   // Phase 2: Get all humans with data
-  HUMAN_OUTPUT_FILE_SORTED:
+  HUMAN_FILE_SORTED:
     path.join(
       DATA_DIR,
       "../data/" + PERSON_CANDIDATES + "_person_candidates_sorted/" + PERSON_CANDIDATES + "_person_candidates_sorted.jsonl"
@@ -126,8 +127,23 @@ module.exports = {
       "../data//" + PERSON_DATA_ENRICHMENT + "_dataenrichment/" + PERSON_DATA_ENRICHMENT + "a_dataenrichment_state.json"
     ),
 
+  PERSONS_DATAENRICHMENT_CONTINENT_FILE:
+    path.join(
+      __dirname,
+      "../data//" + PERSON_DATA_ENRICHMENT + "_dataenrichment/" + PERSON_DATA_ENRICHMENT + "b_dataenrichment_cont.jsonl"
+    ),
 
+  PERSONS_DATAENRICHMENT_CONTINENT_STATE_FILE:
+    path.join(
+      __dirname,
+      "../data//" + PERSON_DATA_ENRICHMENT + "_dataenrichment/" + PERSON_DATA_ENRICHMENT + "b_dataenrichment_cont_state.json"
+    ),
+  CONTINENT_CACHE_FILE:
 
+    path.join(
+      __dirname,
+      "../data//" + PERSON_DATA_ENRICHMENT + "_dataenrichment/" + PERSON_DATA_ENRICHMENT + "b_continent_cache.json"
+    ),
 
   // Pahse 6: Get all used occupations
   USED_OCCUPATIONS_FILE:

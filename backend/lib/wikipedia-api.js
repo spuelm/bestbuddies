@@ -9,7 +9,7 @@ async function fetchBatch(
     action: "query",
     generator: "allpages",
     gaplimit: 500,
-   // prop: "pageprops",
+    // prop: "pageprops",
     prop: "pageprops|info",
     format: "json"
   };

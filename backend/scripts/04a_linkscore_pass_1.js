@@ -5,18 +5,18 @@ const axios = require("axios");
 
 
 const {
-  HUMAN_OUTPUT_FILE_SORTED,
+  HUMAN_FILE_SORTED,
   PERSONS_LINKSCORE_PASS1_FILE,
   PERSONS_LINKSCORE_PASS1_STATE_FILE
 } = require("../lib/config");
 
 
 
-const INPUT_FILE = HUMAN_OUTPUT_FILE_SORTED;
+const INPUT_FILE = HUMAN_FILE_SORTED;
 
-const OUTPUT_FILE =PERSONS_LINKSCORE_PASS1_FILE;
+const OUTPUT_FILE = PERSONS_LINKSCORE_PASS1_FILE;
 
-const STATE_FILE =PERSONS_LINKSCORE_PASS1_STATE_FILE;
+const STATE_FILE = PERSONS_LINKSCORE_PASS1_STATE_FILE;
 
 
 const BATCH_SIZE = 50;
@@ -89,15 +89,15 @@ async function queryBatch(
               p.title
           )
           .join("|");
-   
+
 
       const client =
-      await getClient();
-  
+        await getClient();
+
 
       const response =
         await client.get(
-    //  await axios.get(
+          //  await axios.get(
           "https://de.wikipedia.org/w/api.php",
           {
             params: {
@@ -139,7 +139,7 @@ async function queryBatch(
         const retryAfter =
           parseInt(
             err.response.headers[
-              "retry-after"
+            "retry-after"
             ]
           ) || 60;
 
@@ -211,8 +211,7 @@ async function run() {
     if (
       lineNumber <=
       startLine
-    )
-    {
+    ) {
       continue;
     }
 
@@ -228,8 +227,7 @@ async function run() {
     if (
       batch.length <
       BATCH_SIZE
-    )
-    {
+    ) {
       continue;
     }
 
@@ -250,8 +248,7 @@ async function run() {
       of Object.values(
         pages
       )
-    )
-    {
+    ) {
 
       const person =
         batch.find(
@@ -262,8 +259,7 @@ async function run() {
 
       if (
         !person
-      )
-      {
+      ) {
         continue;
       }
 
@@ -278,7 +274,7 @@ async function run() {
               []
             ).length
 
-         // hasMoreLinks,
+          // hasMoreLinks,
 
           // lhcontinue:
           //   hasMoreLinks
@@ -322,8 +318,7 @@ async function run() {
     if (
       processed >=
       MAX_PERSONS
-    )
-    {
+    ) {
       break;
     }
 

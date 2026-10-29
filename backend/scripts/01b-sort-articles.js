@@ -2,17 +2,14 @@ const fs = require("fs");
 const readline = require("readline");
 const path = require("path");
 
-const INPUT_FILE =
-  path.join(
-    __dirname,
-    "../data/all_articles_with_qid.jsonl"
-  );
+const {
+  ALL_ARTICLES_FILE,
+  ALL_ARTICLES_FILE_SORTED
+} = require("../lib/config");
 
-const OUTPUT_FILE =
-  path.join(
-    __dirname,
-    "../data/all_articles_with_qid_sorted.jsonl"
-  );
+const INPUT_FILE = ALL_ARTICLES_FILE;
+const OUTPUT_FILE = ALL_ARTICLES_FILE_SORTED;
+
 
 async function run() {
 

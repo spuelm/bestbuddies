@@ -27,7 +27,7 @@ function findContemporaries(
 
   const target =
     peopleByQid[
-      targetQid
+    targetQid
     ];
 
   if (!target) {
@@ -36,9 +36,9 @@ function findContemporaries(
       `Person ${targetQid} nicht gefunden`
     );
   }
-  let targetAge=target.deathYear - target.birthYear; 
+  let targetAge = target.deathYear - target.birthYear;
 
-  const minOverlap =    options.minOverlapYears || 10;
+  const minOverlap = options.minOverlapYears || 10;
 
   const candidateIds =
     new Set();
@@ -52,7 +52,7 @@ function findContemporaries(
 
     const candidates =
       centuryIndex[
-        century
+      century
       ] || [];
 
     for (
@@ -121,12 +121,12 @@ function findContemporaries(
       continue;
     }
 
-  
+
     result.push({
 
       qid,
       pageid:
-       String(person.pageid),
+        String(person.pageid),
 
       title:
         person.title,
@@ -152,23 +152,27 @@ function findContemporaries(
         person.nationalityIds || [],
 
       occupationIds:
-        person.occupationIds || []
+        person.occupationIds || [],
+      continent:
+        person.continent
+
+
     });
   }
 
   const maxArticleLength = result.reduce(
-      (max, item) => Math.max(max, item.articleLength),
-      0
+    (max, item) => Math.max(max, item.articleLength),
+    0
   );
 
 
   result.sort(
     (a, b) => {
-       const linkcompare = (b.linkScore || 0) - (a.linkScore || 0);
-       if (linkcompare !== 0) {
-         return linkcompare;
-       }
-       return b.articleLength - a.articleLength;
+      const linkcompare = (b.linkScore || 0) - (a.linkScore || 0);
+      if (linkcompare !== 0) {
+        return linkcompare;
+      }
+      return b.articleLength - a.articleLength;
     }
 
   );

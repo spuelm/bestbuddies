@@ -2,7 +2,9 @@ import pandas as pd
 import numpy as np
 
 datadir="C:/Users/steph/OneDrive/Projekte/Bestbuddies/git/bestbuddies/backend/data"
-person_file=datadir+"/04_linkscore/04c_persons_linkscore_pass2.jsonl"
+
+
+person_file=datadir+"/05_dataenrichment/05a_dataenrichment.jsonl"
 occupation_file=datadir+"/06_occupation/06b_occupation-group-cache.json"
 error_file=datadir+"/06_occupation/analytic_error.jsonl"
 
@@ -20,7 +22,7 @@ valid_occupations = {
     for qid, data in occupations.items()
     if data.get("group") not in {"person", "nicht gefunden"}
 }
-print (valid_occupations)
+
 
 count = 0
 max_linkscore =-1
@@ -35,15 +37,16 @@ with open(person_file, "r", encoding="utf-8") as f, \
         occupation_ids = person.get("occupationIds", [])
         if len (occupation_ids) == 0:
            no_occ += 1 
-        if not any(qid in valid_occupations for qid in occupation_ids):
-            count += 1
-            max_linkscore = max(max_linkscore, person["linkScore"])
-            max_articlelen = max (max_articlelen, person["articleLength"])
-            ferr.write(json.dumps(person, ensure_ascii=False) + "\n")
-            print(
-                person["wikidataId"],
-                person["title"]
-            )
+        else: 
+            if not any(qid in valid_occupations for qid in occupation_ids):
+                count += 1
+                max_linkscore = max(max_linkscore, person["linkScore"])
+                max_articlelen = max (max_articlelen, person["articleLength"])
+                ferr.write(json.dumps(person, ensure_ascii=False) + "\n")
+                print(
+                    person["wikidataId"],
+                    person["title"]
+                )
 # Datei laden
 with open(error_file, "r", encoding="utf-8") as f:
     persons = [json.loads(line) for line in f]
@@ -92,4 +95,20 @@ print(f"max articlelength {max_articlelen}")
 print(f"max linkscore {max_linkscore}")
 print (f"no_occ {no_occ}")
 
+
+import pandas as pd
+from collections import Counter
+
+# JSONL laden
+df = pd.read_json(error_file, lines=True)
+
+# Erstes Element jeder Liste extrahieren
+first_ids = df["occupationIds"].apply(
+    lambda x: x[0] if isinstance(x, list) and len(x) > 0 else None
+)
+
+# Häufigkeiten zählen
+counts = first_ids.value_counts()
+
+print(counts)
 
