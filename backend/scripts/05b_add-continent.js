@@ -15,25 +15,64 @@ const {
     saveState
 } = require("../lib/state-manager");
 
-const {
-    PERSONS_LINKSCORE_PASS2_FILE,
-    PERSONS_DATAENRICHMENT_CONTINENT_FILE,
-    PERSONS_DATAENRICHMENT_CONTINENT_STATE_FILE,
-    CONTINENT_CACHE_FILE
-} = require("../lib/config");
+const PERSONS_DATAENRICHMENT_FILE =
+    path.join(
+        __dirname,
+        "../data/PERSONS_DATAENRICHMENT_FILE.jsonl"
+    );
 
-const INPUT_FILE = PERSONS_LINKSCORE_PASS2_FILE;
-const OUTPUT_FILE = PERSONS_DATAENRICHMENT_CONTINENT_FILE;
+const OUTPUT_FILE =
+    path.join(
+        __dirname,
+        "../data/PERSONS_DATAENRICHMENT_FILE_WITH_CONTINENT.jsonl"
+    );
 
+const STATE_FILE =
+    path.join(
+        __dirname,
+        "../data/add-birth-continent-state.json"
+    );
 
-const STATE_FILE = PERSONS_DATAENRICHMENT_CONTINENT_STATE_FILE;
-
-
-
+const PLACE_CACHE_FILE =
+    path.join(
+        __dirname,
+        "../data/birthplace-continent-cache.json"
+    );
 
 const BATCH_SIZE = 50;
 
-async function wdataLoadEntitiesWithRetry(
+function getEntityIds(
+    claims,
+    property
+) {
+
+    return (
+        claims?.[property] || []
+    )
+        .map(
+            entry =>
+                entry?.mainsnak
+                    ?.datavalue
+                    ?.value
+                    ?.id
+        )
+        .filter(Boolean);
+}
+
+function getLabel(
+    entity
+) {
+
+    return (
+        entity?.labels?.de
+            ?.value ||
+        entity?.labels?.en
+            ?.value ||
+        null
+    );
+}
+
+async function loadEntitiesWithRetry(
     ids
 ) {
 
@@ -41,11 +80,12 @@ async function wdataLoadEntitiesWithRetry(
 
         try {
 
+            const entities =
+                await wdataLoadEntities(ids);
+
             return (
-                await wdataLoadEntities(
-                    ids
-                )
-            ) || {};
+                entities || {}
+            );
 
         } catch (err) {
 
@@ -77,35 +117,131 @@ async function wdataLoadEntitiesWithRetry(
     }
 }
 
-function getEntityIds(
-    claims,
-    property
+async function getContinentData(
+    birthPlaceId,
+    cache
 ) {
 
-    return (
-        claims?.[property] || []
-    )
-        .map(
-            item =>
-                item?.mainsnak
-                    ?.datavalue
-                    ?.value
-                    ?.id
-        )
-        .filter(Boolean);
-}
+    if (
+        cache[birthPlaceId]
+    ) {
 
-function getLabel(
-    entity
-) {
+        return cache[
+            birthPlaceId
+        ];
+    }
 
-    return (
-        entity?.labels?.de
-            ?.value ||
-        entity?.labels?.en
-            ?.value ||
-        null
-    );
+    const birthPlaceEntities =
+        await loadEntitiesWithRetry(
+            [birthPlaceId]
+        );
+
+    const birthPlace =
+        birthPlaceEntities[
+        birthPlaceId
+        ];
+
+    if (!birthPlace) {
+
+        cache[
+            birthPlaceId
+        ] = {
+            birthCountryId:
+                null,
+            continentIds:
+                [],
+            continent:
+                []
+        };
+
+        return cache[
+            birthPlaceId
+        ];
+    }
+
+    const countryIds =
+        getEntityIds(
+            birthPlace.claims,
+            "P17"
+        );
+
+    const birthCountryId =
+        countryIds[0] ||
+        null;
+
+    if (
+        !birthCountryId
+    ) {
+
+        cache[
+            birthPlaceId
+        ] = {
+            birthCountryId:
+                null,
+            continentIds:
+                [],
+            continent:
+                []
+        };
+
+        return cache[
+            birthPlaceId
+        ];
+    }
+
+    const countryEntities =
+        await loadEntitiesWithRetry(
+            [birthCountryId]
+        );
+
+    const country =
+        countryEntities[
+        birthCountryId
+        ];
+
+    const continentIds =
+        getEntityIds(
+            country?.claims,
+            "P30"
+        );
+
+    let continentLabels =
+        [];
+
+    if (
+        continentIds.length
+    ) {
+
+        const continentEntities =
+            await loadEntitiesWithRetry(
+                continentIds
+            );
+
+        continentLabels =
+            continentIds
+                .map(
+                    id =>
+                        getLabel(
+                            continentEntities[
+                            id
+                            ]
+                        )
+                )
+                .filter(Boolean);
+    }
+
+    cache[
+        birthPlaceId
+    ] = {
+        birthCountryId,
+        continentIds,
+        continent:
+            continentLabels
+    };
+
+    return cache[
+        birthPlaceId
+    ];
 }
 
 async function run() {
@@ -120,14 +256,14 @@ async function run() {
 
     if (
         fs.existsSync(
-            CONTINENT_CACHE_FILE
+            PLACE_CACHE_FILE
         )
     ) {
 
         cache =
             JSON.parse(
                 fs.readFileSync(
-                    CONTINENT_CACHE_FILE,
+                    PLACE_CACHE_FILE,
                     "utf8"
                 )
             );
@@ -137,7 +273,7 @@ async function run() {
         readline.createInterface({
             input:
                 fs.createReadStream(
-                    INPUT_FILE
+                    PERSONS_DATAENRICHMENT_FILE
                 ),
             crlfDelay:
                 Infinity
@@ -158,8 +294,6 @@ async function run() {
     let processed =
         state.processed || 0;
 
-    let batch = [];
-
     for await (
         const line of reader
     ) {
@@ -177,217 +311,123 @@ async function run() {
             continue;
         }
 
-        batch.push({
-            lineNumber,
-            data:
-                JSON.parse(
-                    line
-                )
-        });
+        const person =
+            JSON.parse(line);
 
-        if (
-            batch.length <
-            BATCH_SIZE
-        ) {
+        try {
 
-            continue;
-        }
+            const birthPlaceId =
+                person.birthPlaceId;
 
-        const nationalityIds =
-            new Set();
+            if (!birthPlaceId) {
 
-        for (
-            const item
-            of batch
-        ) {
-
-            for (
-                const nationalityId
-                of (
-                    item.data
-                        .nationalityIds ||
-                    []
-                )
-            ) {
-
-                if (
-                    !cache[
-                    nationalityId
-                    ]
-                ) {
-
-                    nationalityIds.add(
-                        nationalityId
-                    );
-                }
-            }
-        }
-        nationalityIds.clear()
-        nationalityIds.add(item.birthPLace)
-        if (
-            nationalityIds.size > 0
-        ) {
-
-            const nationalityEntities =
-                await wdataLoadEntitiesWithRetry(
-                    [...nationalityIds]
+                output.write(
+                    JSON.stringify(
+                        person
+                    ) + "\n"
                 );
 
-            for (
-                const nationalityId
-                of nationalityIds
-            ) {
+                processed++;
 
-                const nationality =
-                    nationalityEntities[
-                    nationalityId
-                    ];
-
-                if (
-                    !nationality
-                ) {
-
-                    continue;
-                }
-
-                const continentIds =
-                    getEntityIds(
-                        nationality.claims,
-                        "P30"
-                    );
-
-                let continentLabels =
-                    [];
-
-                if (
-                    continentIds.length
-                ) {
-
-                    const continentEntities =
-                        await wdataLoadEntitiesWithRetry(
-                            continentIds
-                        );
-
-                    continentLabels =
-                        continentIds
-                            .map(
-                                id =>
-                                    getLabel(
-                                        continentEntities[
-                                        id
-                                        ]
-                                    )
-                            )
-                            .filter(Boolean);
-                }
-
-                cache[
-                    nationalityId
-                ] = {
-
-                    continentIds,
-
-                    continentLabels
-                };
+                continue;
             }
 
-            fs.writeFileSync(
-                CONTINENT_CACHE_FILE,
-                JSON.stringify(
-                    cache,
-                    null,
-                    2
-                )
-            );
-        }
-
-        for (
-            const item
-            of batch
-        ) {
-
-            const continentIds =
-                new Set();
-
-            const continentLabels =
-                new Set();
-
-            for (
-                const nationalityId
-                of (
-                    item.data
-                        .nationalityIds ||
-                    []
-                )
-            ) {
-
-                const entry =
-                    cache[
-                    nationalityId
-                    ];
-
-                if (
-                    !entry
-                ) {
-
-                    continue;
-                }
-
-                entry.continentIds
-                    .forEach(
-                        id =>
-                            continentIds.add(
-                                id
-                            )
-                    );
-
-                entry.continentLabels
-                    .forEach(
-                        label =>
-                            continentLabels.add(
-                                label
-                            )
-                    );
-            }
+            const continentData =
+                await getContinentData(
+                    birthPlaceId,
+                    cache
+                );
 
             output.write(
                 JSON.stringify({
 
-                    ...item.data,
+                    ...person,
+
+                    birthCountryId:
+                        continentData.birthCountryId,
 
                     continentIds:
-                        [
-                            ...continentIds
-                        ],
+                        continentData.continentIds,
 
                     continent:
-                        [
-                            ...continentLabels
-                        ]
+                        continentData.continent
 
                 }) + "\n"
             );
 
             processed++;
-        }
 
-        saveState(
-            STATE_FILE,
-            {
-                lineNumber,
-                processed,
-                updatedAt:
-                    new Date()
-                        .toISOString()
+            if (
+                processed % 100 ===
+                0
+            ) {
+
+                fs.writeFileSync(
+                    PLACE_CACHE_FILE,
+                    JSON.stringify(
+                        cache,
+                        null,
+                        2
+                    )
+                );
+
+                saveState(
+                    STATE_FILE,
+                    {
+                        lineNumber,
+                        processed,
+                        updatedAt:
+                            new Date()
+                                .toISOString()
+                    }
+                );
+
+                console.log(
+                    `${processed.toLocaleString("de-DE")} Personen verarbeitet`
+                );
             }
-        );
 
-        console.log(
-            `${processed.toLocaleString("de-DE")} Personen verarbeitet`
-        );
+        } catch (err) {
 
-        batch = [];
+            console.error(
+                err.message
+            );
+
+            saveState(
+                STATE_FILE,
+                {
+                    lineNumber:
+                        lineNumber - 1,
+                    processed,
+                    updatedAt:
+                        new Date()
+                            .toISOString()
+                }
+            );
+
+            break;
+        }
     }
+
+    fs.writeFileSync(
+        PLACE_CACHE_FILE,
+        JSON.stringify(
+            cache,
+            null,
+            2
+        )
+    );
+
+    saveState(
+        STATE_FILE,
+        {
+            lineNumber,
+            processed,
+            updatedAt:
+                new Date()
+                    .toISOString()
+        }
+    );
 
     output.end();
 

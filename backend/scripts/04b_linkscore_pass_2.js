@@ -2,6 +2,7 @@ const fs = require("fs");
 const readline = require("readline");
 const path = require("path");
 const axios = require("axios");
+const sleep = require("./sleep")
 
 const {
   PERSONS_LINKSCORE_PASS1_FILE,
@@ -19,25 +20,12 @@ const {
   BOT_HEADER
 } = require(
   "../lib/mediawiki-client",
-
 );
 
 
 
 
 const MAX_PERSONS = 5000000;
-
-function sleep(ms) {
-
-  return new Promise(
-    resolve =>
-      setTimeout(
-        resolve,
-        ms
-      )
-  );
-}
-
 
 
 function loadState() {

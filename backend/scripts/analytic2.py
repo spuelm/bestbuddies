@@ -4,7 +4,7 @@ import numpy as np
 datadir="C:/Users/steph/OneDrive/Projekte/Bestbuddies/git/bestbuddies/backend/data"
 
 
-person_file=datadir+"/05_dataenrichment/05a_dataenrichment.jsonl"
+person_file=datadir+"/04_linkscore/04b_persons_linkscore_pass2.jsonl"
 occupation_file=datadir+"/06_occupation/06b_occupation-group-cache.json"
 error_file=datadir+"/06_occupation/analytic_error.jsonl"
 
