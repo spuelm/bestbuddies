@@ -16,20 +16,20 @@ from pylib.wiki_api import (
 )
 
 from pylib.state_manager import load_state, save_state
-from pylib.jsonl_writer import append_records
+from pylib.jsonl_writer import append_records, ensure_parent_directory
 from pylib.config import (
-    ALL_ARTICLES_FILE_SORTED,
-    HUMAN_FILE_SORTED,
-    HUMAN_STATE_FILE_SORTED,
-    P31_STATS_FILE_SORTED,
+    ALL_ARTICLES_FILE,
+    PERSON_FILE,
+    PERSON_FILE_STATE_FILE,
+    P31_STATS_FILE,
 )
 
 MAX_HUMANS = 5_000_000
 
-INPUT_FILE = ALL_ARTICLES_FILE_SORTED
-OUTPUT_FILE = HUMAN_FILE_SORTED
-STATE_FILE = HUMAN_STATE_FILE_SORTED
-STATISTICS_FILE = P31_STATS_FILE_SORTED
+INPUT_FILE = ALL_ARTICLES_FILE
+OUTPUT_FILE = PERSON_FILE
+STATE_FILE = PERSON_FILE_STATE_FILE
+STATISTICS_FILE = P31_STATS_FILE
 
 BATCH_SIZE = 50
 
@@ -195,6 +195,11 @@ def process_batch(batch, stats):
 
 
 def run():
+    print(f"Inputfile:  {INPUT_FILE}")
+    print(f"Outputfile: {OUTPUT_FILE}")
+    print(f"Statefile:  {STATE_FILE}")
+    ensure_parent_directory(OUTPUT_FILE)
+    ensure_parent_directory(STATE_FILE)
 
     state = load_state(HUMAN_STATE_FILE_SORTED)
 

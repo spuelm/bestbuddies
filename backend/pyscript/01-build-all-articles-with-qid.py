@@ -2,10 +2,8 @@ from pathlib import Path
 import asyncio
 
 from pylib.config import (
-    DATA_DIR,
     ALL_ARTICLES_FILE,
     ALL_ARTICLES_STATE_FILE,
-    REQUEST_DELAY_S,
 )
 
 from pylib.wiki_api import wpedia_fetch_batch

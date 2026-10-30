@@ -4,10 +4,7 @@ from pathlib import Path
 
 
 def ensure_parent_directory(path):
-    Path(path).parent.mkdir(
-        parents=True,
-        exist_ok=True
-    )
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
 
 
 def append_records(output_file, records):

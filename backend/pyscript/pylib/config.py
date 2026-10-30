@@ -1,7 +1,9 @@
 from pathlib import Path
 
 DATA_DIR = Path(__file__).parent.parent.parent / "data_p"
-DATA_DIR = Path ("C:/Users/steph/OneDrive/Projekte/Bestbuddies/git/bestbuddies/backend/data_p")
+DATA_DIR = Path(
+    "C:/Users/steph/OneDrive/Projekte/Bestbuddies/git/bestbuddies/backend/data_p"
+)
 
 ALL_ARTICLES = "01"
 PERSON_CANDIDATES = "02"
@@ -15,33 +17,36 @@ REQUEST_DELAY_S = 3
 # Phase 1: Get all articles with QID
 ALL_ARTICLES_DIR = "_all_articles"
 ALL_ARTICLES_FILE = (
-    DATA_DIR / f"{ALL_ARTICLES}{ALL_ARTICLES_DIR}" / f"{ALL_ARTICLES}_all_articles_with_qid.jsonl"
+    DATA_DIR
+    / f"{ALL_ARTICLES}{ALL_ARTICLES_DIR}"
+    / f"{ALL_ARTICLES}_all_articles_with_qid.jsonl"
 )
 
 ALL_ARTICLES_STATE_FILE = (
-    DATA_DIR / f"{ALL_ARTICLES}{ALL_ARTICLES_DIR}" / f"{ALL_ARTICLES}_all_articles_with_qid_state.json"
+    DATA_DIR
+    / f"{ALL_ARTICLES}{ALL_ARTICLES_DIR}"
+    / f"{ALL_ARTICLES}_all_articles_with_qid_state.json"
 )
 
-# Phase 1b: Create all articles with QID sorted
-ALL_ARTICLES_FILE_SORTED = (
-    DATA_DIR / f"{ALL_ARTICLES}b_all_articles_with_qid_sorted"
-    / f"{ALL_ARTICLES}b_all_articles_with_qid_sorted.jsonl"
-)
 
 # Phase 2: Get all humans with data
-HUMAN_FILE_SORTED = (
-    DATA_DIR / f"{PERSON_CANDIDATES}_person_candidates_sorted"
-    / f"{PERSON_CANDIDATES}_person_candidates_sorted.jsonl"
+PERSON_FILE_DIR = "_person_candidates"
+PERSON_FILE = (
+    DATA_DIR
+    / f"{PERSON_CANDIDATES}{PERSON_FILE_DIR}"
+    / f"{PERSON_CANDIDATES}_person_candidates.jsonl"
 )
 
-P31_STATS_FILE_SORTED = (
-    DATA_DIR / f"{PERSON_CANDIDATES}_person_candidates_sorted"
-    / f"{PERSON_CANDIDATES}_p31_stats_sorted.json"
+P31_STATS_FILE = (
+    DATA_DIR
+    / f"{PERSON_CANDIDATES}{PERSON_FILE_DIR}"
+    / f"{PERSON_CANDIDATES}_p31_stats.json"
 )
 
-HUMAN_STATE_FILE_SORTED = (
-    DATA_DIR / f"{PERSON_CANDIDATES}_person_candidates_sorted"
-    / f"{PERSON_CANDIDATES}_person_candidates_sorted_state.json"
+PERSON_STATE_FILE = (
+    DATA_DIR
+    / f"{PERSON_CANDIDATES}{PERSON_FILE_DIR}"
+    / f"{PERSON_CANDIDATES}_person_candidates_state.json"
 )
 
 # Phase 4a: Linkscore

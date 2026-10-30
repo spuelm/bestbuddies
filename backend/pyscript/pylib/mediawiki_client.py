@@ -2,8 +2,6 @@ import os
 from dotenv import load_dotenv
 import requests
 
-
-
 load_dotenv()
 
 BOT_HEADER = (
@@ -25,30 +23,18 @@ def create_client():
     print(username)
 
     if not username or not password:
-        raise RuntimeError(
-            "MEDIAWIKI_USERNAME oder MEDIAWIKI_PASSWORD fehlt"
-        )
+        raise RuntimeError("MEDIAWIKI_USERNAME oder MEDIAWIKI_PASSWORD fehlt")
 
     session = requests.Session()
-    session.headers.update({
-        "User-Agent": BOT_HEADER
-    })
+    session.headers.update({"User-Agent": BOT_HEADER})
 
     token_response = session.get(
         WIKI_API,
-        params={
-            "action": "query",
-            "meta": "tokens",
-            "type": "login",
-            "format": "json"
-        }
+        params={"action": "query", "meta": "tokens", "type": "login", "format": "json"},
     )
     token_response.raise_for_status()
 
-    login_token = (
-        token_response.json()
-        ["query"]["tokens"]["logintoken"]
-    )
+    login_token = token_response.json()["query"]["tokens"]["logintoken"]
 
     login_response = session.post(
         WIKI_API,
@@ -57,8 +43,8 @@ def create_client():
             "lgname": username,
             "lgpassword": password,
             "lgtoken": login_token,
-            "format": "json"
-        }
+            "format": "json",
+        },
     )
     login_response.raise_for_status()
 
@@ -67,9 +53,7 @@ def create_client():
     result = login_response.json()["login"]["result"]
 
     if result != "Success":
-        raise RuntimeError(
-            f"Login fehlgeschlagen: {result}"
-        )
+        raise RuntimeError(f"Login fehlgeschlagen: {result}")
 
     print("Wikipedia Login erfolgreich")
 
