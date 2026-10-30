@@ -3,8 +3,6 @@
 
 from pylib.mediawiki_client import get_client, BOT_HEADER
 
-
-
 # Wikidata Properties
 P_POSITION_HELD = "P39"
 P_BIRTH_YEAR = "P569"
@@ -49,12 +47,12 @@ def wpedia_fetch_batch(gapcontinue: str | None = None) -> dict:
         "generator": "allpages",
         "gaplimit": 500,
         "prop": "pageprops|info",
-        "format": "json"
+        "format": "json",
     }
 
     if gapcontinue:
         params["gapcontinue"] = gapcontinue
-   
+
     client = get_client()
     response = client.get(
         "https://de.wikipedia.org/w/api.php",
