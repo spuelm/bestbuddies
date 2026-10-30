@@ -8,7 +8,9 @@ from pylib.config import (
 
 from pylib.wiki_api import wpedia_fetch_batch
 from pylib.jsonl_writer import append_records, ensure_parent_directory
-from pylib.state_manager import load_state, save_state
+from pylib.state_manager import load_state_old, save_state_old
+
+# @TODO load_state_old, save_state_old ersetzen
 
 INPUT_FILE = None
 OUTPUT_FILE = ALL_ARTICLES_FILE
@@ -28,7 +30,7 @@ def run():
     ensure_parent_directory(OUTPUT_FILE)
     ensure_parent_directory(STATE_FILE)
 
-    state = load_state(STATE_FILE)
+    state = load_state_old(STATE_FILE)
 
     gapcontinue = state.get("gapcontinue")
     article_count = state.get("articleCount", 0)
@@ -66,7 +68,7 @@ def run():
 
             gapcontinue = data.get("continue", {}).get("gapcontinue")
 
-            save_state(STATE_FILE, gapcontinue, article_count, qid_count)
+            save_state_old(STATE_FILE, gapcontinue, article_count, qid_count)
 
             log_progress(article_count, qid_count)
 
@@ -88,7 +90,7 @@ def run():
 
             print(str(err))
 
-            save_state(STATE_FILE, gapcontinue, article_count, qid_count)
+            save_state_old(STATE_FILE, gapcontinue, article_count, qid_count)
 
             break
 

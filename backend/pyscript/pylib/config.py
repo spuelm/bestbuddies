@@ -1,76 +1,82 @@
 from pathlib import Path
 
-DATA_DIR = Path(__file__).parent.parent.parent / "data_p"
-DATA_DIR = Path(
+DATA_INFIX = Path(__file__).parent.parent.parent / "data_p"
+DATA_INFIX = Path(
     "C:/Users/steph/OneDrive/Projekte/Bestbuddies/git/bestbuddies/backend/data_p"
 )
 
 ALL_ARTICLES = "01"
 PERSON_CANDIDATES = "02"
-PERSON_WITH_LINKS = "04"
-PERSON_DATA_ENRICHMENT = "05"
-OCCUPATION = "06"
-PERSON_WITH_CENTURIES = "07"
+PERSON_WITH_LINKS = "03"
+PERSON_DATA_ENRICHMENT = "04"
+OCCUPATION = "05"
+PERSON_WITH_CENTURIES = "06"
 
 REQUEST_DELAY_S = 3
 
 # Phase 1: Get all articles with QID
-ALL_ARTICLES_DIR = "_all_articles"
+ALL_ARTICLES_INFIX = "_all_articles"
 ALL_ARTICLES_FILE = (
-    DATA_DIR
-    / f"{ALL_ARTICLES}{ALL_ARTICLES_DIR}"
+    DATA_INFIX
+    / f"{ALL_ARTICLES}{ALL_ARTICLES_INFIX}"
     / f"{ALL_ARTICLES}_all_articles_with_qid.jsonl"
 )
 
 ALL_ARTICLES_STATE_FILE = (
-    DATA_DIR
-    / f"{ALL_ARTICLES}{ALL_ARTICLES_DIR}"
+    DATA_INFIX
+    / f"{ALL_ARTICLES}{ALL_ARTICLES_INFIX}"
     / f"{ALL_ARTICLES}_all_articles_with_qid_state.json"
 )
 
 
 # Phase 2: Get all humans with data
-PERSON_FILE_DIR = "_person_candidates"
+PERSON_FILE_INFIX = "_person_candidates"
 PERSON_FILE = (
-    DATA_DIR
-    / f"{PERSON_CANDIDATES}{PERSON_FILE_DIR}"
+    DATA_INFIX
+    / f"{PERSON_CANDIDATES}{PERSON_FILE_INFIX}"
     / f"{PERSON_CANDIDATES}_person_candidates.jsonl"
 )
 
 P31_STATS_FILE = (
-    DATA_DIR
-    / f"{PERSON_CANDIDATES}{PERSON_FILE_DIR}"
+    DATA_INFIX
+    / f"{PERSON_CANDIDATES}{PERSON_FILE_INFIX}"
     / f"{PERSON_CANDIDATES}_p31_stats.json"
 )
 
 PERSON_STATE_FILE = (
-    DATA_DIR
-    / f"{PERSON_CANDIDATES}{PERSON_FILE_DIR}"
+    DATA_INFIX
+    / f"{PERSON_CANDIDATES}{PERSON_FILE_INFIX}"
     / f"{PERSON_CANDIDATES}_person_candidates_state.json"
 )
 
-# Phase 4a: Linkscore
+# Phase 3: Linkscore --------------------------------------------------------------------------------------
+PERSONS_LINKSCORE_INFIX = "_persons_linkscore"
 PERSONS_LINKSCORE_PASS1_FILE = (
     Path(__file__).parent
-    / f"../data/{PERSON_WITH_LINKS}_linkscore/{PERSON_WITH_LINKS}a_persons_linkscore_pass1.jsonl"
+    / f"../data/{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
+    / f"{PERSON_WITH_LINKS}a{PERSONS_LINKSCORE_INFIX}_pass1.jsonl"
 )
 
 PERSONS_LINKSCORE_PASS1_STATE_FILE = (
     Path(__file__).parent
-    / f"../data/{PERSON_WITH_LINKS}_linkscore/{PERSON_WITH_LINKS}a_linkscore_pass1_state.json"
+    / f"../data/{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
+    / f"{PERSON_WITH_LINKS}a_{PERSONS_LINKSCORE_INFIX}_pass1_state.json"
 )
 
 PERSONS_LINKSCORE_PASS2_FILE = (
     Path(__file__).parent
-    / f"../data/{PERSON_WITH_LINKS}_linkscore/{PERSON_WITH_LINKS}b_persons_linkscore_pass2.jsonl"
+    / f"../data/{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
+    / f"{PERSON_WITH_LINKS}b_{PERSONS_LINKSCORE_INFIX}_pass2.jsonl"
 )
 
 PERSONS_LINKSCORE_PASS2_STATE_FILE = (
     Path(__file__).parent
-    / f"../data/{PERSON_WITH_LINKS}_linkscore/{PERSON_WITH_LINKS}b_linkscore_pass2_state.json"
+    / f"../data/{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
+    / f"{PERSON_WITH_LINKS}b_{PERSONS_LINKSCORE_INFIX}_pass2_state.json"
 )
 
-# Phase 5: Data enrichment
+# Phase 4: Data enrichment ---------------------------------------------------------
+DATAENRICHMENT_INFIX = "_dataenrichment"
 PERSONS_DATAENRICHMENT_CONTINENT_FILE = (
     Path(__file__).parent
     / f"../data/{PERSON_DATA_ENRICHMENT}_dataenrichment/{PERSON_DATA_ENRICHMENT}b_dataenrichment_cont.jsonl"

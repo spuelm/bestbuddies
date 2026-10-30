@@ -6,12 +6,12 @@ from datetime import datetime
 from pylib.wiki_api import (
     wdata_load_entities,
     P_POSITION_HELT,
-    P_BITRH_YEAR,
+    P_BIRTH_YEAR,
     P_DEATH_YEAR,
     P_NATIONALITIES,
     P_OCCUPATIONS,
     P_GIVEN_NAMES,
-    P_FANILY_NAMES,
+    P_FAMILY_NAMES,
     P_BIRTH_PLACE,
 )
 
@@ -20,7 +20,7 @@ from pylib.jsonl_writer import append_records, ensure_parent_directory
 from pylib.config import (
     ALL_ARTICLES_FILE,
     PERSON_FILE,
-    PERSON_FILE_STATE_FILE,
+    PERSON_STATE_FILE,
     P31_STATS_FILE,
 )
 
@@ -28,7 +28,7 @@ MAX_HUMANS = 5_000_000
 
 INPUT_FILE = ALL_ARTICLES_FILE
 OUTPUT_FILE = PERSON_FILE
-STATE_FILE = PERSON_FILE_STATE_FILE
+STATE_FILE = PERSON_STATE_FILE
 STATISTICS_FILE = P31_STATS_FILE
 
 BATCH_SIZE = 50
@@ -116,7 +116,7 @@ def process_batch(batch, stats):
 
         birth_year = get_year(
             claims,
-            P_BITRH_YEAR,
+            P_BIRTH_YEAR,
         )
 
         death_year = get_year(
@@ -146,7 +146,7 @@ def process_batch(batch, stats):
 
         family_name_ids = get_entity_ids(
             claims,
-            P_FANILY_NAMES,
+            P_FAMILY_NAMES,
         )
 
         birth_place_id = get_single_entity_id(
@@ -201,13 +201,13 @@ def run():
     ensure_parent_directory(OUTPUT_FILE)
     ensure_parent_directory(STATE_FILE)
 
-    state = load_state(HUMAN_STATE_FILE_SORTED)
-
+    state = load_state(STATE_FILE)
+    print(state)
     stats = {}
 
-    if os.path.exists(P31_STATS_FILE_SORTED):
+    if os.path.exists(STATISTICS_FILE):
         with open(
-            P31_STATS_FILE_SORTED,
+            STATISTICS_FILE,
             "r",
             encoding="utf-8",
         ) as f:
@@ -265,7 +265,7 @@ def run():
                     print(f"Ziel erreicht: {MAX_HUMANS:,} Personen")
 
                     save_state(
-                        HUMAN_STATE_FILE_SORTED,
+                        STATE_FILE,
                         {
                             "lineNumber": current_line,
                             "processed": processed,
@@ -352,7 +352,7 @@ def run():
                 print(str(err))
 
                 save_state(
-                    HUMAN_STATE_FILE_SORTED,
+                    STATE_FILE,
                     {
                         "lineNumber": current_line,
                         "processed": processed,

@@ -4,7 +4,7 @@
 from pylib.mediawiki_client import get_client, BOT_HEADER
 
 # Wikidata Properties
-P_POSITION_HELD = "P39"
+P_POSITION_HELT = "P39"
 P_BIRTH_YEAR = "P569"
 P_DEATH_YEAR = "P570"
 P_NATIONALITIES = "P27"
