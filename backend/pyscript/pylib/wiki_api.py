@@ -1,6 +1,4 @@
 # wiki_api.py
-
-
 from pylib.mediawiki_client import get_client, BOT_HEADER
 
 # Wikidata Properties
@@ -19,7 +17,6 @@ def wdata_load_entities(qids: list[str]) -> dict:
     """
     Lädt mehrere Wikidata-Entitäten auf einmal.
     """
-
     client = get_client()
     response = client.get(
         "https://www.wikidata.org/w/api.php",
@@ -33,7 +30,6 @@ def wdata_load_entities(qids: list[str]) -> dict:
         },
         timeout=30,
     )
-
     response.raise_for_status()
     return response.json().get("entities", {})
 
@@ -49,10 +45,8 @@ def wpedia_fetch_batch(gapcontinue: str | None = None) -> dict:
         "prop": "pageprops|info",
         "format": "json",
     }
-
     if gapcontinue:
         params["gapcontinue"] = gapcontinue
-
     client = get_client()
     response = client.get(
         "https://de.wikipedia.org/w/api.php",
@@ -62,6 +56,5 @@ def wpedia_fetch_batch(gapcontinue: str | None = None) -> dict:
         },
         timeout=30,
     )
-
     response.raise_for_status()
     return response.json()
