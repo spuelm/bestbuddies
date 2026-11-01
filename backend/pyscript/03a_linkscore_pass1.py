@@ -3,7 +3,7 @@ import time
 from pathlib import Path
 import requests
 from pylib.config import (
-    HUMAN_FILE_SORTED,
+    PERSON_FILE,
     PERSONS_LINKSCORE_PASS1_FILE,
     PERSONS_LINKSCORE_PASS1_STATE_FILE,
 )
@@ -11,7 +11,7 @@ from pylib.mediawiki_client import get_client
 from pylib.wiki_api import BOT_HEADER
 from pylib.jsonl_writer import append_records, ensure_parent_directory
 
-INPUT_FILE = HUMAN_FILE_SORTED
+INPUT_FILE = PERSON_FILE
 OUTPUT_FILE = PERSONS_LINKSCORE_PASS1_FILE
 STATE_FILE = PERSONS_LINKSCORE_PASS1_STATE_FILE
 BATCH_SIZE = 50
@@ -78,6 +78,7 @@ def run():
     processed = state.get("processed", 0)
     mode = "a" if start_line > 0 else "w"
     print(f"Fortsetzen bei Zeile {start_line}")
+    output = open(OUTPUT_FILE, mode, encoding="utf-8")
     try:
         batch = []
         line_number = 0
@@ -105,7 +106,7 @@ def run():
                     result["lhcontinue"] = (
                         data["continue"]["lhcontinue"] if has_more_links else None
                     )
-                    append_records(OUTPUT_FILE, result)
+                    output.write(json.dumps(result, ensure_ascii=False) + "\n")
                     processed += 1
                 save_state(
                     {

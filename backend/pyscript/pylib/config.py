@@ -43,62 +43,58 @@ PERSON_STATE_FILE = (
 # Phase 3: Linkscore --------------------------------------------------------------------------------------
 PERSONS_LINKSCORE_INFIX = "_persons_linkscore"
 PERSONS_LINKSCORE_PASS1_FILE = (
-    Path(__file__).parent
-    / f"../data/{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
+    DATA_INFIX
+    / f"{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
     / f"{PERSON_WITH_LINKS}a{PERSONS_LINKSCORE_INFIX}_pass1.jsonl"
 )
 PERSONS_LINKSCORE_PASS1_STATE_FILE = (
-    Path(__file__).parent
-    / f"../data/{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
+    DATA_INFIX
+    / f"{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
     / f"{PERSON_WITH_LINKS}a_{PERSONS_LINKSCORE_INFIX}_pass1_state.json"
 )
 PERSONS_LINKSCORE_PASS2_FILE = (
-    Path(__file__).parent
-    / f"../data/{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
+    DATA_INFIX
+    / f"{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
     / f"{PERSON_WITH_LINKS}b_{PERSONS_LINKSCORE_INFIX}_pass2.jsonl"
 )
 PERSONS_LINKSCORE_PASS2_STATE_FILE = (
-    Path(__file__).parent
-    / f"../data/{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
+    DATA_INFIX
+    / f"{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
     / f"{PERSON_WITH_LINKS}b_{PERSONS_LINKSCORE_INFIX}_pass2_state.json"
 )
 # Phase 4: Data enrichment ---------------------------------------------------------
 DATAENRICHMENT_INFIX = "_dataenrichment"
 PERSONS_DATAENRICHMENT_CONTINENT_FILE = (
-    Path(__file__).parent
-    / f"../data/{PERSON_DATA_ENRICHMENT}_dataenrichment/{PERSON_DATA_ENRICHMENT}b_dataenrichment_cont.jsonl"
+    DATA_INFIX
+    / f"{PERSON_DATA_ENRICHMENT}_dataenrichment/{PERSON_DATA_ENRICHMENT}b_dataenrichment_cont.jsonl"
 )
 PERSONS_DATAENRICHMENT_CONTINENT_STATE_FILE = (
-    Path(__file__).parent
-    / f"../data/{PERSON_DATA_ENRICHMENT}_dataenrichment/{PERSON_DATA_ENRICHMENT}b_dataenrichment_cont_state.json"
+    DATA_INFIX
+    / f"{PERSON_DATA_ENRICHMENT}_dataenrichment/{PERSON_DATA_ENRICHMENT}b_dataenrichment_cont_state.json"
 )
 CONTINENT_CACHE_FILE = (
-    Path(__file__).parent
-    / f"../data/{PERSON_DATA_ENRICHMENT}_dataenrichment/{PERSON_DATA_ENRICHMENT}b_continent_cache.json"
+    DATA_INFIX
+    / f"{PERSON_DATA_ENRICHMENT}_dataenrichment/{PERSON_DATA_ENRICHMENT}b_continent_cache.json"
 )
 # Phase 6: Occupations
 USED_OCCUPATIONS_FILE = (
-    Path(__file__).parent
-    / f"../data/{OCCUPATION}_occupation/{OCCUPATION}a_used-occupations.json"
+    DATA_INFIX / f"{OCCUPATION}_occupation/{OCCUPATION}a_used-occupations.json"
 )
 OCCUPATION_GROUP_CACHE_FILE = (
-    Path(__file__).parent
-    / f"../data/{OCCUPATION}_occupation/{OCCUPATION}b_occupation-group-cache.json"
+    DATA_INFIX / f"{OCCUPATION}_occupation/{OCCUPATION}b_occupation-group-cache.json"
 )
 OCCUPATION_GROUP_STATE_FILE = (
-    Path(__file__).parent
-    / f"../data/{OCCUPATION}_occupation/{OCCUPATION}b_occupation-group-state.json"
+    DATA_INFIX / f"{OCCUPATION}_occupation/{OCCUPATION}b_occupation-group-state.json"
 )
 OCCUPATION_GROUP_ERRORS_FILE = (
-    Path(__file__).parent
-    / f"../data/{OCCUPATION}_occupation/{OCCUPATION}b_occupation-group-errors.jsonl"
+    DATA_INFIX / f"{OCCUPATION}_occupation/{OCCUPATION}b_occupation-group-errors.jsonl"
 )
 # Phase 7: Centuries
 PERSON_CANDIDATES_WITH_CENTURIES_FILE = (
-    Path(__file__).parent
-    / f"../data/{PERSON_WITH_CENTURIES}_century/{PERSON_WITH_CENTURIES}_person_candidates_with_centuries.jsonl"
+    DATA_INFIX
+    / f"{PERSON_WITH_CENTURIES}_century/{PERSON_WITH_CENTURIES}_person_candidates_with_centuries.jsonl"
 )
 CENTURY_INDEX_FILE = (
-    Path(__file__).parent
-    / f"../data/{PERSON_WITH_CENTURIES}_century/{PERSON_WITH_CENTURIES}_century-index.json"
+    DATA_INFIX
+    / f"{PERSON_WITH_CENTURIES}_century/{PERSON_WITH_CENTURIES}_century-index.json"
 )
