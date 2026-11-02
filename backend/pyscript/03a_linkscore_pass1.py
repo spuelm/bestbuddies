@@ -10,16 +10,13 @@ from pylib.config import (
 from pylib.mediawiki_client import get_client
 from pylib.wiki_api import BOT_HEADER
 from pylib.jsonl_writer import append_records, ensure_parent_directory
+from pylib.utils import measure_runtime
 
 INPUT_FILE = PERSON_FILE
 OUTPUT_FILE = PERSONS_LINKSCORE_PASS1_FILE
 STATE_FILE = PERSONS_LINKSCORE_PASS1_STATE_FILE
-BATCH_SIZE = 50
+BATCH_SIZE = 10
 MAX_PERSONS = 5_000_000
-
-
-def sleep(ms):
-    time.sleep(ms / 1000)
 
 
 def load_state():
@@ -40,14 +37,14 @@ def save_state(state):
 def query_batch(batch):
     while True:
         try:
-            titles = "|".join(person["title"] for person in batch)
+            pageids = "|".join(str(person["pageid"]) for person in batch)
             client = get_client()
             response = client.get(
                 "https://de.wikipedia.org/w/api.php",
                 params={
                     "action": "query",
                     "prop": "linkshere",
-                    "titles": titles,
+                    "pageids": pageids,
                     "lhlimit": "max",
                     "lhnamespace": 0,
                     "lhshow": "!redirect",
@@ -67,6 +64,7 @@ def query_batch(batch):
             raise
 
 
+@measure_runtime
 def run():
     print(f"Inputfile:  {INPUT_FILE}")
     print(f"Outputfile: {OUTPUT_FILE}")
@@ -106,8 +104,10 @@ def run():
                     result["lhcontinue"] = (
                         data["continue"]["lhcontinue"] if has_more_links else None
                     )
+
                     output.write(json.dumps(result, ensure_ascii=False) + "\n")
                     processed += 1
+
                 save_state(
                     {
                         "lineNumber": line_number,
@@ -121,7 +121,6 @@ def run():
                 batch = []
                 if processed >= MAX_PERSONS:
                     break
-                sleep(250)
     finally:
         output.close()
     print("Pass 1 beendet.")
