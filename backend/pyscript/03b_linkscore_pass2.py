@@ -1,24 +1,22 @@
 import json
 import time
 from datetime import datetime
+import traceback
+
+import requests
 from pylib.config import (
-    PERSON_FILE,
     PERSONS_LINKSCORE_PASS1_FILE,
     PERSONS_LINKSCORE_PASS2_FILE,
     PERSONS_LINKSCORE_PASS2_STATE_FILE,
 )
 from pylib.mediawiki_client import get_client, BOT_HEADER
 from pylib.jsonl_writer import append_records, ensure_parent_directory
-from pylib.utils import measure_runtime
+from pylib.utils import ORANGE, measure_runtime, printcolor, RED, GREEN, RESET
 
 INPUT_FILE = PERSONS_LINKSCORE_PASS1_FILE
 OUTPUT_FILE = PERSONS_LINKSCORE_PASS2_FILE
 STATE_FILE = PERSONS_LINKSCORE_PASS2_STATE_FILE
 MAX_PERSONS = 5_000_000
-
-RESET = "\033[0m"
-RED = "\033[31m"
-GREEN = "\033[32m"
 
 
 def load_state():
@@ -63,6 +61,7 @@ def get_link_score(pageid: str) -> int:
                 },
                 timeout=30,
             )
+            response.raise_for_status()
             data = response.json()
 
             pages = data.get("query", {}).get("pages", {})
@@ -76,13 +75,18 @@ def get_link_score(pageid: str) -> int:
             if not continuation:
                 return total_links
             lhcontinue = continuation.get("lhcontinue")
-        except Exception as exc:
-            status = getattr(exc, "status_code", None)
+        except requests.exceptions.HTTPError as exc:
+            status = exc.response.status_code
             if status == 429:
-                retry_after = 60
-                print(f"429 bei {title}. " f"Warte {retry_after}s")
+                retry_after = int(exc.response.headers.get("Retry-After", 60))
+                printcolor(
+                    f"Fehler 429. Warte {retry_after}s",
+                    color=ORANGE,
+                )
                 time.sleep(retry_after)
                 continue
+            raise
+        except Exception:
             raise
 
 
@@ -111,21 +115,26 @@ def run():
                 print(f"Limit {MAX_PERSONS:,}".replace(",", ".") + " erreicht")
                 break
             person = json.loads(line)
+            person["state_pas2"] = "copy"
             try:
                 new_score = 0
                 old_score = person.get("linkScore", 0)
-                if old_score < 500 and old_score > 0:  # tautologie als test
+
+                hasMoreLinks = person.get("hasMoreLinks", False)
+                if hasMoreLinks:
+                    person["state_pas2"] = "score_error"
                     new_score = get_link_score(str(person["pageid"]))
+                    person["state_pas2"] = "new_score"
                     person["linkScore"] = new_score
-                    if old_score != new_score:
-                        print(
-                            f"{GREEN if new_score > 500 else RESET}"
-                            + f"[{processed:,}] "
-                            f"{person['title']} "
-                            f"articlelen: "
-                            f"{person.get('articleLength', 0)} "
-                            f"→ {old_score} → {person['linkScore']}   " + RESET
-                        )
+                    if new_score > 0:
+                        person["hasMoreLinks"] = False
+                    print(
+                        f"{GREEN if new_score > 500 else RESET}" + f"[{processed:,}] "
+                        f"{person['title']} "
+                        f"articlelen: "
+                        f"{person.get('articleLength', 0)} "
+                        f"→ {old_score} → {person['linkScore']}   " + RESET
+                    )
 
                 outfile.write(
                     json.dumps(
@@ -153,11 +162,11 @@ def run():
                         f"→ Linkscore={person['linkScore']}"
                     )
             except Exception as exc:
-                print(
-                    RED + f"Fehler bei "
-                    f"{person.get('title', '<unbekannt>')}: "
-                    f"{exc}" + RESET
+                printcolor(
+                    f"Fehler bei " f"{person.get('title', '<unbekannt>')}: " f"{exc}",
+                    color=RED,
                 )
+                traceback.print_exc()
                 save_state(
                     {
                         "lineNumber": line_number - 1,

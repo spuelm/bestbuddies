@@ -21,3 +21,26 @@ def measure_runtime(func):
             )
 
     return wrapper
+
+
+RESET = "\033[0m"
+RED = "\033[31m"
+GREEN = "\033[32m"
+ORANGE = "\033[33m"
+
+
+def printcolor(*objects, sep=" ", end="\n", file=None, flush=False, color=None):
+    """
+    Print with color support.
+    :param objects: Objects to print.
+    :param sep: Separator between objects.
+    :param end: End character.
+    :param file: File to print to.
+    :param flush: Whether to flush the output.
+    :param color: Color code (e.g., "\033[91m" for red).
+    """
+    if color:
+        print(color, end="")
+    print(*objects, sep=sep, end=end, file=file, flush=flush)
+    if color:
+        print("\033[0m", end="")  # Reset color
