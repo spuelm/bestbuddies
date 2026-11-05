@@ -7,7 +7,7 @@ DATA_DIR = Path(
 ALL_ARTICLES = "01"
 PERSON_CANDIDATES = "02"
 PERSON_WITH_LINKS = "03"
-PERSON_DATA_ENRICHMENT = "04"
+CONTINENTS = "04"
 OCCUPATION = "05"
 PERSON_WITH_CENTURIES = "06"
 REQUEST_DELAY_S = 3
@@ -64,20 +64,37 @@ PERSONS_LINKSCORE_PASS2_STATE_FILE = (
     / f"{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
     / f"{PERSON_WITH_LINKS}b_{PERSONS_LINKSCORE_INFIX}_pass2_state.json"
 )
-# Phase 4: Data enrichment ---------------------------------------------------------
-DATAENRICHMENT_INFIX = "_dataenrichment"
-PERSONS_DATAENRICHMENT_CONTINENT_FILE = (
+# Phase 4: continents  ---------------------------------------------------------
+CONTINENT_INFIX = "_continents"
+COUNTRY_INFIX = "country"
+COUNTRY_CACHE_FILE = (
     DATA_DIR
-    / f"{PERSON_DATA_ENRICHMENT}_dataenrichment/{PERSON_DATA_ENRICHMENT}b_dataenrichment_cont.jsonl"
+    / f"{CONTINENTS}{CONTINENT_INFIX}"
+    / f"{CONTINENTS}a_{COUNTRY_INFIX}_cache.jsonl"
 )
-PERSONS_DATAENRICHMENT_CONTINENT_STATE_FILE = (
+
+COUNTRY_STATE_FILE = (
     DATA_DIR
-    / f"{PERSON_DATA_ENRICHMENT}_dataenrichment/{PERSON_DATA_ENRICHMENT}b_dataenrichment_cont_state.json"
+    / f"{CONTINENTS}{CONTINENT_INFIX}"
+    / f"{CONTINENTS}a_{COUNTRY_INFIX}_state.json"
 )
 CONTINENT_CACHE_FILE = (
     DATA_DIR
-    / f"{PERSON_DATA_ENRICHMENT}_dataenrichment/{PERSON_DATA_ENRICHMENT}b_continent_cache.json"
+    / f"{CONTINENTS}{CONTINENT_INFIX}"
+    / f"{CONTINENTS}b{CONTINENT_INFIX}_cache.jsonl"
 )
+
+CONTINENT_FILE = (
+    DATA_DIR
+    / f"{CONTINENTS}{CONTINENT_INFIX}"
+    / f"{CONTINENTS}c{CONTINENT_INFIX}.jsonl"
+)
+CONTINENT_STATE_FILE = (
+    DATA_DIR
+    / f"{CONTINENTS}{CONTINENT_INFIX}"
+    / f"{CONTINENTS}c{CONTINENT_INFIX}_state.json"
+)
+
 # Phase 6: Occupations
 USED_OCCUPATIONS_FILE = (
     DATA_DIR / f"{OCCUPATION}_occupation/{OCCUPATION}a_used-occupations.json"
