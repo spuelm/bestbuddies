@@ -95,6 +95,11 @@ CONTINENT_STATE_FILE = (
     / f"{CONTINENTS}c{CONTINENT_INFIX}_state.json"
 )
 
+
+PERSONS_WITH_LOCATION_FILE = (
+    DATA_DIR / f"{CONTINENTS}{CONTINENT_INFIX}" / f"persons_with_location.jsonl"
+)
+
 # Phase 6: Occupations
 USED_OCCUPATIONS_FILE = (
     DATA_DIR / f"{OCCUPATION}_occupation/{OCCUPATION}a_used-occupations.json"
