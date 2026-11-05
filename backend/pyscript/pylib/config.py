@@ -84,20 +84,10 @@ CONTINENT_CACHE_FILE = (
     / f"{CONTINENTS}b{CONTINENT_INFIX}_cache.jsonl"
 )
 
-CONTINENT_FILE = (
-    DATA_DIR
-    / f"{CONTINENTS}{CONTINENT_INFIX}"
-    / f"{CONTINENTS}c{CONTINENT_INFIX}.jsonl"
-)
-CONTINENT_STATE_FILE = (
-    DATA_DIR
-    / f"{CONTINENTS}{CONTINENT_INFIX}"
-    / f"{CONTINENTS}c{CONTINENT_INFIX}_state.json"
-)
-
-
 PERSONS_WITH_LOCATION_FILE = (
-    DATA_DIR / f"{CONTINENTS}{CONTINENT_INFIX}" / f"persons_with_location.jsonl"
+    DATA_DIR
+    / f"{CONTINENTS}{CONTINENT_INFIX}"
+    / f"{CONTINENTS}c_persons_with_location.jsonl"
 )
 
 # Phase 6: Occupations

@@ -110,6 +110,14 @@ def correct_continent(
             return "Q46", "Europa"
         else:
             return "Q48", "Asien"
+    if continent_id == "Q55643":
+        continent_id = "Q538"  # nur ein ozeanien
+    if continent_id == "Q5401":
+        continent_id = "Q48"  # nur ein Asien
+    if continent_id == "Q27611":
+        continent_id = "Q18"  # panama nach südamerika
+        continent = "Südamerika"
+
     return continent_id, continent
 
 
@@ -144,7 +152,7 @@ def run() -> None:
             continent_entity = entity_cache.get(continent_id)
             continent_name = get_label(continent_entity)
             country_name = countries[country_id]["countryName"]
-            continent_entity, continent_name = correct_continent(
+            continent_id, continent_name = correct_continent(
                 country_name, continent_id, continent_name
             )
         write_jsonl(
