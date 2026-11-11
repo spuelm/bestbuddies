@@ -81,6 +81,8 @@ TARGET_GROUPS = [
     {"name": "medic", "group": "medizin"},
     {"name": "arzt", "group": "medizin"},
     {"name": "physicist", "group": "medizin"},
+    {"name": "schamane", "group": "medizin"},
+    {"name": "heiler", "group": "medizin"},
     {"name": "wirtschaft", "group": "wirtschaft"},
     {"name": "management", "group": "wirtschaft"},
     {"name": "economy", "group": "wirtschaft"},
