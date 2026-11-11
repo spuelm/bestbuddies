@@ -23,6 +23,7 @@ ALL_ARTICLES_STATE_FILE = (
     / f"{ALL_ARTICLES}{ALL_ARTICLES_INFIX}"
     / f"{ALL_ARTICLES}_all_articles_with_qid_state.json"
 )
+RESULT_PHASE_1_FILE = ALL_ARTICLES_FILE
 # Phase 2: Get all humans with data
 PERSON_FILE_INFIX = "_person_candidates"
 PERSON_FILE = (
@@ -40,6 +41,7 @@ PERSON_STATE_FILE = (
     / f"{PERSON_CANDIDATES}{PERSON_FILE_INFIX}"
     / f"{PERSON_CANDIDATES}_person_candidates_state.json"
 )
+RESULT_PHASE_2_FILE = PERSON_FILE
 # Phase 3: Linkscore --------------------------------------------------------------------------------------
 PERSONS_LINKSCORE_INFIX = "_persons_linkscore"
 PERSONS_LINKSCORE_PASS1_FILE = (
@@ -64,6 +66,7 @@ PERSONS_LINKSCORE_PASS2_STATE_FILE = (
     / f"{PERSON_WITH_LINKS}{PERSONS_LINKSCORE_INFIX}"
     / f"{PERSON_WITH_LINKS}b_{PERSONS_LINKSCORE_INFIX}_pass2_state.json"
 )
+RESULT_PHASE_3_FILE = PERSONS_LINKSCORE_PASS2_FILE
 # Phase 4: continents  ---------------------------------------------------------
 CONTINENT_INFIX = "_continents"
 COUNTRY_INFIX = "country"
@@ -89,10 +92,13 @@ PERSONS_WITH_LOCATION_FILE = (
     / f"{CONTINENTS}{CONTINENT_INFIX}"
     / f"{CONTINENTS}c_persons_with_location.jsonl"
 )
-
-# Phase 6: Occupations
+RESULT_PHASE_4_FILE = PERSONS_WITH_LOCATION_FILE
+# Phase 5: Occupations ---------------------------------------------------------
+OCCUPATION_INFIX = "_occupation"
 USED_OCCUPATIONS_FILE = (
-    DATA_DIR / f"{OCCUPATION}_occupation/{OCCUPATION}a_used-occupations.json"
+    DATA_DIR
+    / f"{OCCUPATION}{OCCUPATION_INFIX}"
+    / f"{OCCUPATION}a_used-occupations.json"
 )
 OCCUPATION_GROUP_CACHE_FILE = (
     DATA_DIR / f"{OCCUPATION}_occupation/{OCCUPATION}b_occupation-group-cache.json"

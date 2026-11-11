@@ -17,13 +17,6 @@ MAX_DEPTH = 15
 entity_cache: dict[str, dict | None] = {}
 
 
-def load_cache_old() -> dict:
-    if not Path(CACHE_FILE).exists():
-        return {}
-    with open(CACHE_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-
 def load_cache() -> dict:
     cache = {}
 
