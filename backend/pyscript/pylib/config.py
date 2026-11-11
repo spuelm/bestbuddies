@@ -101,13 +101,19 @@ USED_OCCUPATIONS_FILE = (
     / f"{OCCUPATION}a_used-occupations.json"
 )
 OCCUPATION_GROUP_CACHE_FILE = (
-    DATA_DIR / f"{OCCUPATION}_occupation/{OCCUPATION}b_occupation-group-cache.json"
+    DATA_DIR
+    / f"{OCCUPATION}{OCCUPATION_INFIX}"
+    / f"{OCCUPATION}b_occupation-group-cache.json"
 )
 OCCUPATION_GROUP_STATE_FILE = (
-    DATA_DIR / f"{OCCUPATION}_occupation/{OCCUPATION}b_occupation-group-state.json"
+    DATA_DIR
+    / f"{OCCUPATION}{OCCUPATION_INFIX}"
+    / f"{OCCUPATION}b_occupation-group-state.json"
 )
 OCCUPATION_GROUP_ERRORS_FILE = (
-    DATA_DIR / f"{OCCUPATION}_occupation/{OCCUPATION}b_occupation-group-errors.jsonl"
+    DATA_DIR
+    / f"{OCCUPATION}{OCCUPATION_INFIX}"
+    / f"{OCCUPATION}b_occupation-group-errors.jsonl"
 )
 # Phase 7: Centuries
 PERSON_CANDIDATES_WITH_CENTURIES_FILE = (
