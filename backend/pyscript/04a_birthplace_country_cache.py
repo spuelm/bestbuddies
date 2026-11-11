@@ -1,11 +1,12 @@
 import json
 
 from pathlib import Path
+from backend.pyscript.pylib.utils import measure_runtime
 from pylib.jsonl_writer import ensure_parent_directory
 import pylib.config as cfg
 from pylib.wiki_api import wdata_load_entities
 
-INPUT_FILE = cfg.PERSONS_LINKSCORE_PASS2_FILE
+INPUT_FILE = cfg.RESULT_PHASE_3_FILE
 CACHE_FILE = cfg.COUNTRY_CACHE_FILE
 STATE_FILE = cfg.COUNTRY_STATE_FILE
 
@@ -171,6 +172,7 @@ def collect_birthplaces() -> list[str]:
     return sorted(birthplaces)
 
 
+@measure_runtime
 def run():
     print(f"Inputfile:  {INPUT_FILE}")
     print(f"Statefile:  {STATE_FILE}")

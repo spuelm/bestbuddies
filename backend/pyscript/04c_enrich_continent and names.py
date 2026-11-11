@@ -1,13 +1,18 @@
 import json
+from backend.pyscript.pylib.jsonl_writer import ensure_parent_directory
+from backend.pyscript.pylib.utils import measure_runtime
 import pylib.config as cfg
 
+INPUT_FILE = cfg.RESULT_PHASE_3_FILE
 OUTPUT_FILE = cfg.PERSONS_WITH_LOCATION_FILE
+COUNTRY_CACHE_FILE = cfg.COUNTRY_CACHE_FILE
+CONTINENT_CACHE_FILE = cfg.CONTINENT_CACHE_FILE
 
 
 def load_country_cache():
     cache = {}
 
-    with open(cfg.COUNTRY_CACHE_FILE, "r", encoding="utf-8") as f:
+    with open(COUNTRY_CACHE_FILE, "r", encoding="utf-8") as f:
         for line in f:
             if not line.strip():
                 continue
@@ -28,7 +33,7 @@ def load_country_cache():
 def load_continent_cache():
     cache = {}
 
-    with open(cfg.CONTINENT_CACHE_FILE, "r", encoding="utf-8") as f:
+    with open(CONTINENT_CACHE_FILE, "r", encoding="utf-8") as f:
         for line in f:
             if not line.strip():
                 continue
@@ -46,7 +51,12 @@ def load_continent_cache():
     return cache
 
 
+@measure_runtime
 def run():
+    print(f"Inputfile:  {INPUT_FILE}")
+    print(f"COUNTRY_CACHE_FILE: {COUNTRY_CACHE_FILE}")
+    print(f"CONTINENT_CACHE_FILE: {CONTINENT_CACHE_FILE}")
+    ensure_parent_directory(OUTPUT_FILE)
 
     country_cache = load_country_cache()
     continent_cache = load_continent_cache()
@@ -55,7 +65,7 @@ def run():
     country_hits = 0
     continent_hits = 0
 
-    with open(cfg.PERSONS_LINKSCORE_PASS2_FILE, "r", encoding="utf-8") as fin, open(
+    with open(INPUT_FILE, "r", encoding="utf-8") as fin, open(
         OUTPUT_FILE, "w", encoding="utf-8"
     ) as fout:
 

@@ -3,6 +3,7 @@ import json
 import os
 import time
 from datetime import datetime
+from backend.pyscript.pylib.utils import measure_runtime
 from pylib.wiki_api import (
     wdata_load_entities,
     P_POSITION_HELT,
@@ -16,18 +17,13 @@ from pylib.wiki_api import (
 )
 from pylib.state_manager import load_state, save_state
 from pylib.jsonl_writer import append_records, ensure_parent_directory
-from pylib.config import (
-    ALL_ARTICLES_FILE,
-    PERSON_FILE,
-    PERSON_STATE_FILE,
-    P31_STATS_FILE,
-)
+import pylib.config as cfg
 
 MAX_HUMANS = 5_000_000
-INPUT_FILE = ALL_ARTICLES_FILE
-OUTPUT_FILE = PERSON_FILE
-STATE_FILE = PERSON_STATE_FILE
-STATISTICS_FILE = P31_STATS_FILE
+INPUT_FILE = cfg.RESULT_PHASE_1_FILE
+OUTPUT_FILE = cfg.PERSON_FILE
+STATE_FILE = cfg.PERSON_STATE_FILE
+STATISTICS_FILE = cfg.P31_STATS_FILE
 BATCH_SIZE = 50
 last_title = ""
 last_article_length = 0
@@ -157,6 +153,7 @@ def process_batch(batch, stats):
     return humans
 
 
+@measure_runtime
 def run():
     print(f"Inputfile:  {INPUT_FILE}")
     print(f"Outputfile: {OUTPUT_FILE}")

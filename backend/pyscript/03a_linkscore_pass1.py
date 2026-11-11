@@ -2,19 +2,15 @@ import json
 import time
 from pathlib import Path
 import requests
-from pylib.config import (
-    PERSON_FILE,
-    PERSONS_LINKSCORE_PASS1_FILE,
-    PERSONS_LINKSCORE_PASS1_STATE_FILE,
-)
+import pylib.config as cfg
 from pylib.mediawiki_client import get_client
 from pylib.wiki_api import BOT_HEADER
 from pylib.jsonl_writer import append_records, ensure_parent_directory
 from pylib.utils import measure_runtime
 
-INPUT_FILE = PERSON_FILE
-OUTPUT_FILE = PERSONS_LINKSCORE_PASS1_FILE
-STATE_FILE = PERSONS_LINKSCORE_PASS1_STATE_FILE
+INPUT_FILE = cfg.RESULT_PHASE_2_FILE
+OUTPUT_FILE = cfg.PERSONS_LINKSCORE_PASS1_FILE
+STATE_FILE = cfg.PERSONS_LINKSCORE_PASS1_STATE_FILE
 BATCH_SIZE = 10  # muss klein sein damit nicht zu viele hasmorelinks ausgelöst wwerden Bei 50 sind nur 2950 gefunden bei 10 bereits 928032
 MAX_PERSONS = 5_000_000
 

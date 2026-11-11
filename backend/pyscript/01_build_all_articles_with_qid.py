@@ -1,6 +1,7 @@
 # Laufzeit ca. 8h
 from pathlib import Path
 import asyncio
+from backend.pyscript.pylib.utils import measure_runtime
 from pylib.config import (
     ALL_ARTICLES_FILE,
     ALL_ARTICLES_STATE_FILE,
@@ -20,6 +21,7 @@ def log_progress(article_count, qid_count):
     print(f"{article_count:,} Artikel" f" | QIDs={qid_count:,}" f" | {qid_rate:.2f}%")
 
 
+@measure_runtime
 def run():
     print(f"Inputfile:  {INPUT_FILE}")
     print(f"Outputfile: {OUTPUT_FILE}")

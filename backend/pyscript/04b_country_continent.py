@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from backend.pyscript.pylib.utils import measure_runtime
 import pylib.config as cfg
 from pylib.wiki_api import wdata_load_entities
 
@@ -121,6 +122,7 @@ def correct_continent(
     return continent_id, continent
 
 
+@measure_runtime
 def run() -> None:
     countries = load_country_cache()
     country_ids = sorted(countries.keys())
