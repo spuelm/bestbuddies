@@ -4,18 +4,14 @@ from datetime import datetime
 import traceback
 
 import requests
-from pylib.config import (
-    PERSONS_LINKSCORE_PASS1_FILE,
-    PERSONS_LINKSCORE_PASS2_FILE,
-    PERSONS_LINKSCORE_PASS2_STATE_FILE,
-)
-from pylib.mediawiki_client import get_client, BOT_HEADER
+import pylib.config as cfg
+from pylib.wiki_api import get_client, BOT_HEADER
 from pylib.jsonl_writer import ensure_all_directories
 from pylib.utils import ORANGE, measure_runtime, printcolor, RED, GREEN, RESET
 
-INPUT_FILE = PERSONS_LINKSCORE_PASS1_FILE
-OUTPUT_FILE = PERSONS_LINKSCORE_PASS2_FILE
-STATE_FILE = PERSONS_LINKSCORE_PASS2_STATE_FILE
+INPUT_FILE = cfg.PERSONS_LINKSCORE_PASS1_FILE
+OUTPUT_FILE = cfg.PERSONS_LINKSCORE_PASS2_FILE
+STATE_FILE = cfg.PERSONS_LINKSCORE_PASS2_STATE_FILE
 MAX_PERSONS = 5_000_000
 
 

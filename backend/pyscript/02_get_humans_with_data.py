@@ -3,18 +3,8 @@ import json
 import os
 import time
 from datetime import datetime
-from backend.pyscript.pylib.utils import measure_runtime
-from pylib.wiki_api import (
-    wdata_load_entities,
-    P_POSITION_HELT,
-    P_BIRTH_YEAR,
-    P_DEATH_YEAR,
-    P_NATIONALITIES,
-    P_OCCUPATIONS,
-    P_GIVEN_NAMES,
-    P_FAMILY_NAMES,
-    P_BIRTH_PLACE,
-)
+from pylib.utils import measure_runtime
+import pylib.wiki_api as wiki
 from pylib.state_manager import load_state, save_state
 from pylib.jsonl_writer import append_records, ensure_all_directories
 import pylib.config as cfg
@@ -64,23 +54,32 @@ def get_entity_ids(claims, property_id):
     return result
 
 
+def get_entity_ids_with_refcount(claims, property_id):
+    values = claims.get(property_id, [])
+    result = []
+    for item in values:
+        try:
+            qid = item["mainsnak"]["datavalue"]["value"]["id"]
+            result.append(
+                {
+                    "id": qid,
+                    "references": len(item.get("references", [])),
+                    "rank": item.get("rank", "normal"),
+                }
+            )
+        except (KeyError, TypeError):
+            pass
+    return result
+
+
 def process_batch(batch, stats):
     global last_title, last_article_length
     qids = [item["wikidataId"] for item in batch]
     while True:
-        try:
-            entities = wdata_load_entities(qids)
-            if not isinstance(entities, dict):
-                raise RuntimeError("Keine gültigen Entities erhalten")
-            break
-        except Exception as err:
-            response = getattr(err, "response", None)
-            if response and getattr(response, "status_code", None) == 429:
-                retry_after = int(response.headers.get("retry-after", 60))
-                print(f"429 erhalten. Warte {retry_after}s")
-                time.sleep(retry_after)
-                continue
-            raise
+        entities = wiki.wdata_load_entities(qids)
+        if not isinstance(entities, dict):
+            raise RuntimeError("Keine gültigen Entities erhalten")
+        break
     humans = []
     for item in batch:
         entity = entities.get(item["wikidataId"])
@@ -91,35 +90,39 @@ def process_batch(batch, stats):
         p31 = claims.get("P31", [])
         birth_year = get_year(
             claims,
-            P_BIRTH_YEAR,
+            wiki.P_BIRTH_YEAR,
         )
         death_year = get_year(
             claims,
-            P_DEATH_YEAR,
+            wiki.P_DEATH_YEAR,
         )
+        if (birth_year is None) and (
+            death_year is None
+        ):  # humans must have at lease a birthday or a deathday, otherwise they are not humans
+            continue
         nationality_ids = get_entity_ids(
             claims,
-            P_NATIONALITIES,
+            wiki.P_NATIONALITIES,
         )
-        occupation_ids = get_entity_ids(
+        occupation_ids = get_entity_ids_with_refcount(
             claims,
-            P_OCCUPATIONS,
+            wiki.P_OCCUPATIONS,
         )
-        positions_held = get_entity_ids(
+        positions_held = get_entity_ids_with_refcount(
             claims,
-            P_POSITION_HELT,
+            wiki.P_POSITION_HELD,
         )
         given_name_ids = get_entity_ids(
             claims,
-            P_GIVEN_NAMES,
+            wiki.P_GIVEN_NAMES,
         )
         family_name_ids = get_entity_ids(
             claims,
-            P_FAMILY_NAMES,
+            wiki.P_FAMILY_NAMES,
         )
         birth_place_id = get_single_entity_id(
             claims,
-            P_BIRTH_PLACE,
+            wiki.P_BIRTH_PLACE,
         )
         is_human = False
         for claim in p31:

@@ -1,16 +1,14 @@
 from importlib.resources import files
 from pathlib import Path
 
-DATA_DIR = Path(__file__).parent.parent.parent / "data_p"
-DATA_DIR = Path(
-    "C:/Users/steph/OneDrive/Projekte/Bestbuddies/git/bestbuddies/backend/data_p"
-)
-ALL_ARTICLES = "01"
-PERSON_CANDIDATES = "02"
-PERSON_WITH_LINKS = "03"
-CONTINENTS = "04"
-OCCUPATION = "05"
-PERSON_WITH_CENTURIES = "06"
+DATA_DIR = Path(__file__).parent.parent.parent / "data"
+
+ALL_ARTICLES = f"{1:02d}"
+PERSON_CANDIDATES = f"{int(ALL_ARTICLES) + 1:02d}"
+PERSON_WITH_LINKS = f"{int(PERSON_CANDIDATES) + 1:02d}"
+CONTINENTS = f"{int(PERSON_WITH_LINKS) + 1:02d}"
+OCCUPATION = f"{int(CONTINENTS) + 1:02d}"
+PERSON_WITH_CENTURIES = f"{int(OCCUPATION) + 1:02d}"
 REQUEST_DELAY_S = 3
 ALL_FILES = []
 # Phase 1: Get all articles with QID
@@ -71,6 +69,7 @@ CONTINENT_CACHE_FILE = CONTINENT_DIR / f"{CONTINENTS}b{CONTINENT_INFIX}_cache.js
 PERSONS_WITH_LOCATION_FILE = (
     CONTINENT_DIR / f"{CONTINENTS}c_persons_with_location.jsonl"
 )
+
 RESULT_PHASE_4_FILE = PERSONS_WITH_LOCATION_FILE
 ALL_FILES.append(COUNTRY_CACHE_FILE)
 ALL_FILES.append(COUNTRY_STATE_FILE)
@@ -78,20 +77,25 @@ ALL_FILES.append(CONTINENT_CACHE_FILE)
 ALL_FILES.append(PERSONS_WITH_LOCATION_FILE)
 # Phase 5: Occupations ---------------------------------------------------------
 OCCUPATION_DIR = DATA_DIR / f"{OCCUPATION}_occupation"
-USED_OCCUPATIONS_FILE = OCCUPATION_DIR / f"{OCCUPATION}a_used-occupations.json"
+USED_OCCUPATIONS_FILE = OCCUPATION_DIR / f"{OCCUPATION}a_used_occupations.json"
 OCCUPATION_GROUP_CACHE_FILE = (
-    OCCUPATION_DIR / f"{OCCUPATION}b_occupation-group-cache.json"
+    OCCUPATION_DIR / f"{OCCUPATION}b_occupation_group_cache.json"
 )
 OCCUPATION_GROUP_STATE_FILE = (
-    OCCUPATION_DIR / f"{OCCUPATION}b_occupation-group-state.json"
+    OCCUPATION_DIR / f"{OCCUPATION}b_occupation_group_state.json"
 )
 OCCUPATION_GROUP_ERRORS_FILE = (
-    OCCUPATION_DIR / f"{OCCUPATION}b_occupation-group-errors.jsonl"
+    OCCUPATION_DIR / f"{OCCUPATION}b_occupation_group_errors.jsonl"
 )
+PERSONS_WITH_OCCUPATION_FILE = (
+    OCCUPATION_DIR / f"{OCCUPATION}c_persons_with_occupation.jsonl"
+)
+RESULT_PHASE_5_FILE = PERSONS_WITH_OCCUPATION_FILE
 ALL_FILES.append(USED_OCCUPATIONS_FILE)
 ALL_FILES.append(OCCUPATION_GROUP_CACHE_FILE)
 ALL_FILES.append(OCCUPATION_GROUP_STATE_FILE)
 ALL_FILES.append(OCCUPATION_GROUP_ERRORS_FILE)
+ALL_FILES.append(PERSONS_WITH_OCCUPATION_FILE)
 # Phase 7: Centuries ---------------------------------------------------------
 PERSON_CANDIDATES_WITH_CENTURIES_FILE = (
     DATA_DIR
@@ -102,10 +106,9 @@ CENTURY_INDEX_FILE = (
     / f"{PERSON_WITH_CENTURIES}_century/{PERSON_WITH_CENTURIES}_century-index.json"
 )
 
-
 # ----------------------------------------------------------------
-
 if __name__ == "__main__":
+    print(f"Data directory: {DATA_DIR}")
     print("Files:")
     for file in ALL_FILES:
         print(f"  {file}")

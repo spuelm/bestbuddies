@@ -3,8 +3,7 @@ import time
 from pathlib import Path
 import requests
 import pylib.config as cfg
-from pylib.mediawiki_client import get_client
-from pylib.wiki_api import BOT_HEADER
+from pylib.wiki_api import BOT_HEADER, get_client
 from pylib.jsonl_writer import ensure_all_directories
 from pylib.utils import measure_runtime
 
