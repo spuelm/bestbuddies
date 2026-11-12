@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
-from backend.pyscript.pylib.utils import measure_runtime
+from pylib.jsonl_writer import ensure_all_directories
+from pylib.utils import measure_runtime
 import pylib.config as cfg
 from pylib.wiki_api import wdata_load_entities
 
@@ -124,6 +125,9 @@ def correct_continent(
 
 @measure_runtime
 def run() -> None:
+    print(f"Inputfile:  {INPUT_FILE}")
+    print(f"Outputfile: {OUTPUT_FILE}")
+    ensure_all_directories()
     countries = load_country_cache()
     country_ids = sorted(countries.keys())
     print(f"Länder gefunden: {len(country_ids):,}")

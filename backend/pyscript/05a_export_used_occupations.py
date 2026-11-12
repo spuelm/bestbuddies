@@ -1,6 +1,6 @@
 import json
 from collections import defaultdict
-from pylib.jsonl_writer import ensure_parent_directory
+from pylib.jsonl_writer import ensure_all_directories
 import pylib.config as cfg
 from pylib.utils import measure_runtime
 
@@ -12,7 +12,7 @@ OUTPUT_FILE = cfg.USED_OCCUPATIONS_FILE
 def run():
     print(f"Inputfile:  {INPUT_FILE}")
     print(f"Statefile:  {OUTPUT_FILE}")
-    ensure_parent_directory(OUTPUT_FILE)
+    ensure_all_directories()
     occupations = defaultdict(int)
     processed = 0
     with open(INPUT_FILE, "r", encoding="utf-8") as f:

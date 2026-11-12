@@ -1,5 +1,5 @@
 import json
-from backend.pyscript.pylib.jsonl_writer import ensure_parent_directory
+from backend.pyscript.pylib.jsonl_writer import ensure_all_directories
 from backend.pyscript.pylib.utils import measure_runtime
 import pylib.config as cfg
 
@@ -56,7 +56,7 @@ def run():
     print(f"Inputfile:  {INPUT_FILE}")
     print(f"COUNTRY_CACHE_FILE: {COUNTRY_CACHE_FILE}")
     print(f"CONTINENT_CACHE_FILE: {CONTINENT_CACHE_FILE}")
-    ensure_parent_directory(OUTPUT_FILE)
+    ensure_all_directories()
 
     country_cache = load_country_cache()
     continent_cache = load_continent_cache()

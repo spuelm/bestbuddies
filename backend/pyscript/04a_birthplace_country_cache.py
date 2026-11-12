@@ -1,8 +1,8 @@
 import json
 
 from pathlib import Path
-from backend.pyscript.pylib.utils import measure_runtime
-from pylib.jsonl_writer import ensure_parent_directory
+from pylib.utils import measure_runtime
+from pylib.jsonl_writer import ensure_all_directories
 import pylib.config as cfg
 from pylib.wiki_api import wdata_load_entities
 
@@ -177,8 +177,7 @@ def run():
     print(f"Inputfile:  {INPUT_FILE}")
     print(f"Statefile:  {STATE_FILE}")
     print(f"Cachefile:  {CACHE_FILE}")
-    ensure_parent_directory(CACHE_FILE)
-    ensure_parent_directory(STATE_FILE)
+    ensure_all_directories()
     cache = load_cache()
     birthplaces = collect_birthplaces()
     remaining = [place_id for place_id in birthplaces if place_id not in cache]

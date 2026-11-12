@@ -7,7 +7,7 @@ from pylib.config import (
     ALL_ARTICLES_STATE_FILE,
 )
 from pylib.wiki_api import wpedia_fetch_batch
-from pylib.jsonl_writer import append_records, ensure_parent_directory
+from pylib.jsonl_writer import append_records, ensure_all_directories
 from pylib.state_manager import load_state, save_state
 
 # @TODO load_state_old, save_state_old wurde ersetzt muss getestet werden
@@ -26,8 +26,7 @@ def run():
     print(f"Inputfile:  {INPUT_FILE}")
     print(f"Outputfile: {OUTPUT_FILE}")
     print(f"Statefile:  {STATE_FILE}")
-    ensure_parent_directory(OUTPUT_FILE)
-    ensure_parent_directory(STATE_FILE)
+    ensure_all_directories()
     state = load_state(STATE_FILE)
     gapcontinue = state.get("gapcontinue")
     article_count = state.get("articleCount", 0)

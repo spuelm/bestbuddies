@@ -10,7 +10,7 @@ from pylib.config import (
     PERSONS_LINKSCORE_PASS2_STATE_FILE,
 )
 from pylib.mediawiki_client import get_client, BOT_HEADER
-from pylib.jsonl_writer import append_records, ensure_parent_directory
+from pylib.jsonl_writer import ensure_all_directories
 from pylib.utils import ORANGE, measure_runtime, printcolor, RED, GREEN, RESET
 
 INPUT_FILE = PERSONS_LINKSCORE_PASS1_FILE
@@ -31,7 +31,6 @@ def load_state():
 
 
 def save_state(state):
-    ensure_parent_directory(STATE_FILE)
     with open(STATE_FILE, "w", encoding="utf-8") as f:
         json.dump(state, f, indent=2, ensure_ascii=False)
 
@@ -95,13 +94,11 @@ def run():
     print(f"Inputfile:  {INPUT_FILE}")
     print(f"Outputfile: {OUTPUT_FILE}")
     print(f"Statefile:  {STATE_FILE}")
-    ensure_parent_directory(OUTPUT_FILE)
-    ensure_parent_directory(STATE_FILE)
+    ensure_all_directories()
     state = load_state()
     start_line = state.get("lineNumber", 0)
     processed = state.get("processed", 0)
     print(f"Fortsetzen bei Zeile {start_line:,}".replace(",", "."))
-    ensure_parent_directory(OUTPUT_FILE)
     output_mode = "a" if start_line > 0 else "w"
     with open(INPUT_FILE, "r", encoding="utf-8") as infile, open(
         OUTPUT_FILE, output_mode, encoding="utf-8"

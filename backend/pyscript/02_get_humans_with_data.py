@@ -16,7 +16,7 @@ from pylib.wiki_api import (
     P_BIRTH_PLACE,
 )
 from pylib.state_manager import load_state, save_state
-from pylib.jsonl_writer import append_records, ensure_parent_directory
+from pylib.jsonl_writer import append_records, ensure_all_directories
 import pylib.config as cfg
 
 MAX_HUMANS = 5_000_000
@@ -159,9 +159,7 @@ def run():
     print(f"Outputfile: {OUTPUT_FILE}")
     print(f"Statefile:  {STATE_FILE}")
     print(f"Statefile:  {STATISTICS_FILE}")
-    ensure_parent_directory(OUTPUT_FILE)
-    ensure_parent_directory(STATE_FILE)
-    ensure_parent_directory(STATISTICS_FILE)
+    ensure_all_directories()
     state = load_state(STATE_FILE)
     print(state)
     stats = {}

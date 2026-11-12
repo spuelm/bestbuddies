@@ -1,11 +1,9 @@
 import json
 import os
-import time
 from datetime import datetime
 from pylib.utils import measure_runtime
 import pylib.config as cfg
-from pylib.jsonl_writer import ensure_parent_directory
-
+from pylib.jsonl_writer import ensure_all_directories
 from pylib.wiki_api import wdata_load_entities
 from pylib.state_manager import load_state, save_state
 
@@ -14,99 +12,100 @@ CACHE_FILE = cfg.OCCUPATION_GROUP_CACHE_FILE
 STATE_FILE = cfg.OCCUPATION_GROUP_STATE_FILE
 ERROR_FILE = cfg.OCCUPATION_GROUP_ERRORS_FILE
 TARGET_GROUPS = [
-    {"name": "literat", "group": "literatur"},
-    {"name": "writer", "group": "literatur"},
-    {"name": "autor", "group": "literatur"},
-    {"name": "musik", "group": "musik"},
-    {"name": "music", "group": "musik"},
-    {"name": "singer", "group": "musik"},
-    {"name": "composer", "group": "musik"},
-    {"name": "politik", "group": "politik"},
-    {"name": "politic", "group": "politik"},
-    {"name": "radikaler", "group": "politik"},
-    {"name": "bürgerrechtler", "group": "politik"},
-    {"name": "anführer", "group": "politik"},
-    {"name": "aktivist", "group": "politik"},
-    {"name": "herrschaft", "group": "politik"},
-    {"name": "regierung", "group": "politik"},
-    {"name": "beamter", "group": "politik"},
-    {"name": "bürgermeister", "group": "politik"},
-    {"name": "proprietor", "group": "politik"},
-    {"name": "gauleitung", "group": "politik"},
-    {"name": "herrscher", "group": "politik"},
-    {"name": "aristokrat", "group": "politik"},
-    {"name": "häuptling", "group": "politik"},
-    {"name": "samurai", "group": "politik"},
-    {"name": "regierend", "group": "politik"},
-    {"name": "adelstitel", "group": "politik"},
-    {"name": "prinzgemahl", "group": "politik"},
-    {"name": "landeshauptmann", "group": "politik"},
-    {"name": "philosoph", "group": "philosophie"},
-    {"name": "techni", "group": "technik"},
-    {"name": "informatiker", "group": "technik"},
-    {"name": "baumeister", "group": "technik"},
-    {"name": "orgelbauer", "group": "technik"},
-    {"name": "kunst", "group": "künstler"},
-    {"name": "künstler", "group": "künstler"},
-    {"name": "theater", "group": "künstler"},
-    {"name": "tanz", "group": "künstler"},
-    {"name": "fotograf", "group": "künstler"},
-    {"name": "photogra", "group": "künstler"},
-    {"name": "architekt", "group": "künstler"},
-    {"name": "interpret", "group": "künstler"},
-    {"name": "holzschnitzer", "group": "künstler"},
-    {"name": "töpfer", "group": "künstler"},
-    {"name": "kupferstecher", "group": "künstler"},
-    {"name": "religi", "group": "religion"},
-    {"name": "rabbi", "group": "religion"},
-    {"name": "bishop", "group": "religion"},
-    {"name": "islamic", "group": "religion"},
-    {"name": "mitropolit", "group": "religion"},
-    {"name": "theolog", "group": "religion"},
-    {"name": "milit", "group": "militär"},
-    {"name": "soldat", "group": "militär"},
-    {"name": "marschall", "group": "militär"},
-    {"name": "offizier", "group": "militär"},
-    {"name": "crusader", "group": "militär"},
-    {"name": "ritter", "group": "militär"},
-    {"name": "söldner", "group": "militär"},
-    {"name": "sport", "group": "sport"},
-    {"name": "snooker", "group": "sport"},
-    {"name": "fußball", "group": "sport"},
-    {"name": "karambolage", "group": "sport"},
-    {"name": "billard", "group": "sport"},
-    {"name": "dart", "group": "sport"},
-    {"name": "pokerspieler", "group": "sport"},
-    {"name": "medizin", "group": "medizin"},
-    {"name": "medic", "group": "medizin"},
-    {"name": "arzt", "group": "medizin"},
-    {"name": "physicist", "group": "medizin"},
-    {"name": "schamane", "group": "medizin"},
-    {"name": "heiler", "group": "medizin"},
-    {"name": "wirtschaft", "group": "wirtschaft"},
-    {"name": "management", "group": "wirtschaft"},
-    {"name": "economy", "group": "wirtschaft"},
-    {"name": "unternehmer", "group": "wirtschaft"},
-    {"name": "bankier", "group": "wirtschaft"},
-    {"name": "banker", "group": "wirtschaft"},
-    {"name": "kaufmann", "group": "wirtschaft"},
-    {"name": "geschäftsmann", "group": "wirtschaft"},
-    {"name": "landwirt", "group": "wirtschaft"},
-    {"name": "wissenschaft", "group": "wissenschaft"},
-    {"name": "ingenieur", "group": "wissenschaft"},
-    {"name": "museum", "group": "wissenschaft"},
-    {"name": "profess", "group": "wissenschaft"},
-    {"name": "forsch", "group": "wissenschaft"},
-    {"name": "academi", "group": "wissenschaft"},
-    {"name": "physics", "group": "wissenschaft"},
-    {"name": "research", "group": "wissenschaft"},
-    {"name": "scienti", "group": "wissenschaft"},
-    {"name": "science", "group": "wissenschaft"},
-    {"name": "hochschullehrer", "group": "wissenschaft"},
-    {"name": "gelehrter", "group": "wissenschaft"},
-    {"name": "person", "group": "person"},
-    {"name": "fahrzeugführer", "group": "person"},
-    {"name": "art", "group": "kunst"},
+    {"name": "literat", "group": "Literatur"},
+    {"name": "writer", "group": "Literatur"},
+    {"name": "autor", "group": "Literatur"},
+    {"name": "Musik", "group": "Musik"},
+    {"name": "music", "group": "Musik"},
+    {"name": "singer", "group": "Musik"},
+    {"name": "composer", "group": "Musik"},
+    {"name": "politik", "group": "Politik"},
+    {"name": "politic", "group": "Politik"},
+    {"name": "radikaler", "group": "Politik"},
+    {"name": "bürgerrechtler", "group": "Politik"},
+    {"name": "anführer", "group": "Politik"},
+    {"name": "aktivist", "group": "Politik"},
+    {"name": "herrschaft", "group": "Politik"},
+    {"name": "regierung", "group": "Politik"},
+    {"name": "beamter", "group": "Politik"},
+    {"name": "bürgermeister", "group": "Politik"},
+    {"name": "proprietor", "group": "Politik"},
+    {"name": "gauleitung", "group": "Politik"},
+    {"name": "herrscher", "group": "Politik"},
+    {"name": "aristokrat", "group": "Politik"},
+    {"name": "häuptling", "group": "Politik"},
+    {"name": "samurai", "group": "Politik"},
+    {"name": "regierend", "group": "Politik"},
+    {"name": "adelstitel", "group": "Politik"},
+    {"name": "prinzgemahl", "group": "Politik"},
+    {"name": "landeshauptmann", "group": "Politik"},
+    {"name": "philosoph", "group": "Philosophie"},
+    {"name": "techni", "group": "Technik"},
+    {"name": "informatiker", "group": "Technik"},
+    {"name": "baumeister", "group": "Technik"},
+    {"name": "orgelbauer", "group": "Technik"},
+    {"name": "kunst", "group": "Künstler"},
+    {"name": "künstler", "group": "Künstler"},
+    {"name": "theater", "group": "Künstler"},
+    {"name": "tanz", "group": "Künstler"},
+    {"name": "fotograf", "group": "Künstler"},
+    {"name": "photogra", "group": "Künstler"},
+    {"name": "architekt", "group": "Künstler"},
+    {"name": "interpret", "group": "Künstler"},
+    {"name": "holzschnitzer", "group": "Künstler"},
+    {"name": "töpfer", "group": "Künstler"},
+    {"name": "kupferstecher", "group": "Künstler"},
+    {"name": "religi", "group": "Religion"},
+    {"name": "rabbi", "group": "Religion"},
+    {"name": "bishop", "group": "Religion"},
+    {"name": "islamic", "group": "Religion"},
+    {"name": "mitropolit", "group": "Religion"},
+    {"name": "theolog", "group": "Religion"},
+    {"name": "milit", "group": "Militär"},
+    {"name": "soldat", "group": "Militär"},
+    {"name": "marschall", "group": "Militär"},
+    {"name": "offizier", "group": "Militär"},
+    {"name": "crusader", "group": "Militär"},
+    {"name": "ritter", "group": "Militär"},
+    {"name": "söldner", "group": "Militär"},
+    {"name": "Sport", "group": "Sport"},
+    {"name": "snooker", "group": "Sport"},
+    {"name": "fußball", "group": "Sport"},
+    {"name": "karambolage", "group": "Sport"},
+    {"name": "billard", "group": "Sport"},
+    {"name": "dart", "group": "Sport"},
+    {"name": "pokerspieler", "group": "Sport"},
+    {"name": "medizin", "group": "Medizin"},
+    {"name": "medic", "group": "Medizin"},
+    {"name": "arzt", "group": "Medizin"},
+    {"name": "physicist", "group": "Medizin"},
+    {"name": "schamane", "group": "Medizin"},
+    {"name": "heiler", "group": "Medizin"},
+    {"name": "heilpraktiker", "group": "Medizin"},
+    {"name": "Wirtschaft", "group": "Wirtschaft"},
+    {"name": "management", "group": "Wirtschaft"},
+    {"name": "economy", "group": "Wirtschaft"},
+    {"name": "unternehmer", "group": "Wirtschaft"},
+    {"name": "bankier", "group": "Wirtschaft"},
+    {"name": "banker", "group": "Wirtschaft"},
+    {"name": "kaufmann", "group": "Wirtschaft"},
+    {"name": "geschäftsmann", "group": "Wirtschaft"},
+    {"name": "landwirt", "group": "Wirtschaft"},
+    {"name": "wissenschaft", "group": "Wissenschaft"},
+    {"name": "ingenieur", "group": "Wissenschaft"},
+    {"name": "museum", "group": "Wissenschaft"},
+    {"name": "profess", "group": "Wissenschaft"},
+    {"name": "forsch", "group": "Wissenschaft"},
+    {"name": "academi", "group": "Wissenschaft"},
+    {"name": "physics", "group": "Wissenschaft"},
+    {"name": "research", "group": "Wissenschaft"},
+    {"name": "scienti", "group": "Wissenschaft"},
+    {"name": "science", "group": "Wissenschaft"},
+    {"name": "hochschullehrer", "group": "Wissenschaft"},
+    {"name": "gelehrter", "group": "Wissenschaft"},
+    {"name": "person", "group": "Person"},
+    {"name": "fahrzeugführer", "group": "Person"},
+    {"name": "art", "group": "Kunst"},
 ]
 
 
@@ -121,12 +120,12 @@ def append_error(data):
 
 def load_entity_with_retry(qid):
     while True:
-            entities = wdata_load_entities([qid])
-            entity = entities.get(qid)
-            if not entity:
-                raise RuntimeError(f"Entity fehlt: {qid}")
-            return entity
-    
+        entities = wdata_load_entities([qid])
+        entity = entities.get(qid)
+        if not entity:
+            raise RuntimeError(f"Entity fehlt: {qid}")
+        return entity
+
 
 def resolve_group(start_qid, cache):
     if start_qid in cache:
@@ -144,6 +143,7 @@ def resolve_group(start_qid, cache):
             for index, node in enumerate(path_history):
                 cache[node["qid"]] = {
                     "label": node["label"],
+                    "clearname": node["rawlabel"],
                     "group": cached_group,
                     "resolvedVia": cache[qid].get("resolvedVia"),
                     "resolvedViaQid": cache[qid].get("resolvedViaQid"),
@@ -155,12 +155,14 @@ def resolve_group(start_qid, cache):
         except Exception as err:
             append_error({"qid": qid, "error": str(err)})
             continue
-        label = normalize(
+        rawlabel = (
             entity.get("labels", {}).get("de", {}).get("value")
             or entity.get("labels", {}).get("en", {}).get("value")
             or ""
         )
-        path_history.append({"qid": qid, "label": label})
+        label = normalize(rawlabel)
+
+        path_history.append({"qid": qid, "label": label, "rawlabel": rawlabel})
         print(f"Prüfe {qid}: {label}")
         match = next(
             (group for group in TARGET_GROUPS if group["name"] in label),
@@ -170,6 +172,7 @@ def resolve_group(start_qid, cache):
             for index, node in enumerate(path_history):
                 cache[node["qid"]] = {
                     "label": node["label"],
+                    "clearname": node["rawlabel"],
                     "group": match["group"],
                     "resolvedVia": label,
                     "resolvedViaQid": qid,
@@ -206,9 +209,7 @@ def run():
     print(f"Outputfile: {CACHE_FILE}")
     print(f"Statefile:  {STATE_FILE}")
     print(f"Errorfile:  {ERROR_FILE}")
-    ensure_parent_directory(CACHE_FILE)
-    ensure_parent_directory(STATE_FILE)
-    ensure_parent_directory(ERROR_FILE)
+    ensure_all_directories()
     cache = {}
     if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, "r", encoding="utf-8") as f:

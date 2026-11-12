@@ -5,7 +5,7 @@ import requests
 import pylib.config as cfg
 from pylib.mediawiki_client import get_client
 from pylib.wiki_api import BOT_HEADER
-from pylib.jsonl_writer import append_records, ensure_parent_directory
+from pylib.jsonl_writer import ensure_all_directories
 from pylib.utils import measure_runtime
 
 INPUT_FILE = cfg.RESULT_PHASE_2_FILE
@@ -65,8 +65,7 @@ def run():
     print(f"Inputfile:  {INPUT_FILE}")
     print(f"Outputfile: {OUTPUT_FILE}")
     print(f"Statefile:  {STATE_FILE}")
-    ensure_parent_directory(OUTPUT_FILE)
-    ensure_parent_directory(STATE_FILE)
+    ensure_all_directories()
     state = load_state()
     start_line = state.get("lineNumber", 0)
     processed = state.get("processed", 0)
