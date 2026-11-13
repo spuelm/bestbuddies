@@ -9,7 +9,6 @@ from pylib.state_manager import load_state, save_state
 from pylib.jsonl_writer import append_records, ensure_all_directories
 import pylib.config as cfg
 
-MAX_HUMANS = 5_000_000
 INPUT_FILE = cfg.RESULT_PHASE_1_FILE
 OUTPUT_FILE = cfg.PERSON_FILE
 STATE_FILE = cfg.PERSON_STATE_FILE
@@ -194,6 +193,8 @@ def run():
             item = json.loads(line)
             if not item.get("hasQid"):
                 continue
+            # TODO abfrage auf namen wenn name mit "Liste " beginnt überspringen (mehrere 10k skippen)
+
             batch.append(item)
             if len(batch) < BATCH_SIZE:
                 continue
@@ -203,18 +204,7 @@ def run():
                     stats,
                 )
                 humans += len(results)
-                if humans >= MAX_HUMANS:
-                    print(f"Ziel erreicht: {MAX_HUMANS:,} Personen")
-                    save_state(
-                        STATE_FILE,
-                        {
-                            "lineNumber": current_line,
-                            "processed": processed,
-                            "humans": humans,
-                            "updatedAt": datetime.now().isoformat(),
-                        },
-                    )
-                    return
+
                 processed += len(batch)
                 if results:
                     append_records(
@@ -257,24 +247,6 @@ def run():
                     "response",
                     None,
                 )
-                if (
-                    response
-                    and getattr(
-                        response,
-                        "status_code",
-                        None,
-                    )
-                    == 429
-                ):
-                    retry_after = int(
-                        response.headers.get(
-                            "retry-after",
-                            60,
-                        )
-                    )
-                    print(f"429 erhalten. Warte {retry_after}s")
-                    time.sleep(retry_after)
-                    continue
                 print(str(err))
                 save_state(
                     STATE_FILE,

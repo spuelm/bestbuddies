@@ -9,7 +9,7 @@ from pylib.utils import measure_runtime
 
 INPUT_FILE = cfg.RESULT_PHASE_2_FILE
 OUTPUT_FILE = cfg.PERSONS_LINKSCORE_PASS1_FILE
-STATE_FILE = cfg.PERSONS_LINKSCORE_PASS1_STATE_FILE
+STATE_FILE = cfg.derive_state_filename(OUTPUT_FILE)
 BATCH_SIZE = 10  # muss klein sein damit nicht zu viele hasmorelinks ausgelöst wwerden Bei 50 sind nur 2950 gefunden bei 10 bereits 928032
 MAX_PERSONS = 5_000_000
 
